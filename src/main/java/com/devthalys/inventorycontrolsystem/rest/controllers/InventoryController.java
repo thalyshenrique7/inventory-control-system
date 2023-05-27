@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(value = "*")
@@ -38,14 +37,14 @@ public class InventoryController {
     @Autowired
     private ProductServiceImpl productService;
 
-    @GetMapping(value = "/search_by_name/{product}")
+    @GetMapping(value = "/search_by_name/{productName}")
     @ApiOperation(value = "Releases by product")
     @ApiResponse(code = 200, message = "OK")
-    public ResponseEntity<List<InventoryModel>> findByProduct(@PathVariable String product){
-        if(!inventoryService.existsByProductName(product)){
-            throw new ProductNotFoundException("Produto não cadastrado no sistema");
+    public ResponseEntity<List<InventoryModel>> findByProduct(@PathVariable String productName){
+        if(!inventoryService.existsByProductName(productName)){
+            throw new ProductNotFoundException("Produto não cadastrado no sistema.");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(inventoryService.findByProductName(product));
+        return ResponseEntity.status(HttpStatus.OK).body(inventoryService.findByProductName(productName));
     }
 
     @GetMapping(value = "/search_between_periods")
@@ -54,7 +53,7 @@ public class InventoryController {
     public ResponseEntity<List<InventoryModel>> findByDateMovement(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
                                                                    @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate){
         if(!inventoryService.existsByDateMovementBetween(startDate, endDate)){
-            throw new ProductNotFoundException("Produto não cadastrado no sistema");
+            throw new ProductNotFoundException("Produto não cadastrado no sistema.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(inventoryService.findByDateMovementBetween(startDate, endDate));
     }
@@ -64,7 +63,7 @@ public class InventoryController {
     @ApiResponse(code = 200, message = "OK")
     public ResponseEntity<List<InventoryModel>> findByMovementType(@PathVariable MovementType movementType) {
         if (!inventoryService.existsByMovementType(movementType)) {
-            throw new ProductNotFoundException("Produto não cadastrado no sistema");
+            throw new ProductNotFoundException("Produto não cadastrado no sistema.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(inventoryService.findByMovementType(movementType));
     }
@@ -90,12 +89,49 @@ public class InventoryController {
         return ResponseEntity.status(HttpStatus.OK).body(inventoryService.listByProductStock());
     }
 
+    @GetMapping(value = "/list_balance_less")
+    @ApiOperation(value = "Product list by balance less than quantity minimum")
+    @ApiResponse(code = 200, message = "OK")
+    public ResponseEntity<List<InventoryModel>> findProductByBalanceLessThanQuantityMin(){
+        List<InventoryModel> inventory = inventoryService.findProductByBalanceLessThanQuantityMin();
+        if(inventory == null){
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lista de produtos não encontrada ou não existe.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(inventoryService.findProductByBalanceLessThanQuantityMin());
+    }
+
+    @GetMapping(value = "/list_balance_greater")
+    @ApiOperation(value = "Product list by balance greater than quantity minimum")
+    @ApiResponse(code = 200, message = "OK")
+    public ResponseEntity<List<InventoryModel>> findProductByBalanceGreaterThanQuantityMin(){
+        List<InventoryModel> inventory = inventoryService.findProductByBalanceGreaterThanQuantityMin();
+        if(inventory == null){
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lista de produtos não encontrada ou não existe.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(inventoryService.findProductByBalanceGreaterThanQuantityMin());
+    }
+
+    @Transactional
+    @PostMapping("/save")
+    @ApiOperation(value = "Save Movement")
+    @ApiResponses({ @ApiResponse(code = 201, message = "Movement on inventory registered success"),
+                    @ApiResponse(code = 403, message = "User do not authorized")})
+    public ResponseEntity<String> save(@RequestBody InventoryModel inventory) {
+        Long product = inventory.getProduct().getBarCode();
+        if(productService.existsByBarCode(product)){
+            throw new ProductAlreadyExistsException("Código de Barras já possui cadastro no sistema.");
+        }
+
+        inventoryService.save(inventory);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Movimentação de estoque registrada com sucesso.");
+    }
+
     @Transactional
     @PutMapping(value = "/update/{id}")
     @ApiOperation(value = "Update Register")
     @ApiResponses({ @ApiResponse(code = 204, message = "Update Register Success"),
                     @ApiResponse(code = 404, message = "Product do not registered in system")})
-    public ResponseEntity<Object> updateMovement(@PathVariable Long id, @RequestBody @Valid MovementUpdateDto stockDto){
+    public ResponseEntity<Object> update(@PathVariable Long id, @RequestBody @Valid MovementUpdateDto stockDto){
         ProductModel findStock = productService.findById(id);
         if(findStock == null){
             throw new ProductNotFoundException("Produto não cadastrado no sistema.");
@@ -110,27 +146,7 @@ public class InventoryController {
         newStock.setDocument(stockDto.getDocument());
         newStock.setProductCategory(stockDto.getProductCategory());
 
-        inventoryService.updateRegister(newStock);
+        inventoryService.update(newStock);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Registro atualizado com sucesso.");
-    }
-
-    @Transactional
-    @PostMapping("/save")
-    @ApiOperation(value = "Save Movement")
-    @ApiResponses({ @ApiResponse(code = 201, message = "Movement on inventory registered success"),
-                    @ApiResponse(code = 403, message = "User do not authorized"),
-                    @ApiResponse(code = 409, message = "Conflict: Product already have initial balance entry"),
-                    @ApiResponse(code = 404, message = "Do not have entries for this product")})
-    public ResponseEntity<String> saveMovement(@RequestBody InventoryModel stock) {
-        try {
-            inventoryService.saveMovement(stock);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Movimentação de estoque registrada com sucesso.");
-        } catch (UnauthorizedAccessException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuário não autorizado.");
-        } catch (ProductAlreadyExistsException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito: Produto já possui lançamento Saldo Inicial.");
-        } catch (ProductNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não existem lançamentos para esse produto.");
-        }
     }
 }

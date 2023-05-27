@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "stock")
+@Table(name = "inventory")
 public class InventoryModel {
 
     @Id
@@ -32,6 +32,9 @@ public class InventoryModel {
 
     @Column
     private int balance;
+
+    @Column
+    private int quantity;
 
     @Column
     private LocalDateTime movementDate;

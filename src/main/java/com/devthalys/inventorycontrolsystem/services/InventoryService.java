@@ -11,20 +11,19 @@ import java.util.Optional;
 
 @Service
 public interface InventoryService {
-    Optional<InventoryModel> findById(Long id);
+    List<InventoryModel> findProductByBalanceLessThanQuantityMin();
+    List<InventoryModel> findProductByBalanceGreaterThanQuantityMin();
     List<InventoryModel> findByProductName(String name);
     List<InventoryModel> findByDateMovementBetween(LocalDateTime startDate, LocalDateTime endDate);
     List<InventoryModel> findByMovementType(MovementType movementType);
     List<InventoryModel> findByOrderByProduct();
     List<InventoryModel> findByOrderByDateMovement();
-    InventoryModel findByProductIdAndMovementType(ProductModel productModel, MovementType movementType);
     InventoryModel findByProductId(ProductModel productModel);
-    InventoryModel findByProduct(ProductModel product);
-    boolean existsByProduct(ProductModel product);
-    boolean existsByProductId(Long productId);
-    boolean existsByProductIdAndMovementType(Long productId, MovementType movementType);
+    InventoryModel findByProductIdAndMovementType(ProductModel productModel, MovementType movementType);
     boolean existsByProductName(String name);
     boolean existsByDateMovementBetween(LocalDateTime startDate, LocalDateTime endDate);
     boolean existsByMovementType(MovementType movementType);
-    void updateRegister(InventoryModel inventory);
+    boolean existsByProductId(Long productId);
+    boolean existsByProductIdAndMovementType(Long productId, MovementType movementType);
+    void update(InventoryModel inventory);
 }

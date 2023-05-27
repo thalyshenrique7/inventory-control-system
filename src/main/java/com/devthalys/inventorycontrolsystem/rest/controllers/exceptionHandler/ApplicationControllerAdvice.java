@@ -54,4 +54,11 @@ public class ApplicationControllerAdvice {
         String errorMessage = e.getMessage();
         return new ApiErrors(errorMessage);
     }
+
+    @ExceptionHandler(SaveMovementException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ApiErrors handleSaveMovementException(SaveMovementException e){
+        String errorMessage = e.getMessage();
+        return new ApiErrors(errorMessage);
+    }
 }

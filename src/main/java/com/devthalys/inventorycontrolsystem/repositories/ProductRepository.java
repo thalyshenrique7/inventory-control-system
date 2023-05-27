@@ -9,9 +9,8 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<ProductModel, Long> {
 
     Optional<ProductModel> findById(Long id);
-    List<ProductModel> findByName(String name);
+    List<ProductModel> findByNameIgnoreCase(String name);
     ProductModel findByBarCode(Long barCode);
-    boolean existsByName(String name);
     boolean existsByBarCode(Long barCode);
     void deleteById(Long id);
 }

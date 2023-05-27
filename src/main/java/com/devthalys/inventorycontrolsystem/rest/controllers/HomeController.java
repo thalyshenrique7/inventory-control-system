@@ -11,7 +11,7 @@ public class HomeController {
         return "index";
     }
 
-    @RequestMapping(value = "/edit")
+    @RequestMapping(value = "/edit_product")
     public String editProduct(){
         return "edit_product";
     }

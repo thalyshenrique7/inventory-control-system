@@ -26,12 +26,15 @@ public class ChangeObserver implements Observer {
                 + "\n");
     }
 
-    private void handleInventoryChange(InventoryModel stock) {
+    private void handleInventoryChange(InventoryModel inventory) {
         System.out.println("Inventory Observer - Inventory Change: "
-                + "\nStock Id: " + stock.getId()
-                + "\nProduct Name: " + stock.getProduct().getName()
-                + "\nMovement Type: " + stock.getMovementType()
-                + "\nDate Movement: " + stock.getMovementDate()
+                + "\nProduct Name: " + inventory.getProduct().getName()
+                + "\nBarcode: " + inventory.getProduct().getBarCode()
+                + "\nQuantity Minimum: " + inventory.getProduct().getQuantityMin()
+                + "\nInitial Balance: " + inventory.getProduct().getInitialBalance()
+                + "\nMovement Type: " + inventory.getMovementType()
+                + "\nProduct Category: " + inventory.getProductCategory()
+                + "\nDate Movement: " + inventory.getMovementDate()
                 + "\n");
     }
 }

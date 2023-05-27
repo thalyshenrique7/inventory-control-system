@@ -21,7 +21,7 @@ public class SwaggerConfig {
                 .useDefaultResponseMessages(false)
                 .select()
                 .apis(RequestHandlerSelectors
-                        .basePackage("com.devthalys.stockcontrollersystem.rest.controllers"))
+                        .basePackage("com.devthalys.inventorycontrolsystem.rest.controllers"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo());
@@ -29,7 +29,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo(){
         return new ApiInfoBuilder()
-                .title("Stock Controller System")
+                .title("Inventory Control System")
                 .description("Developed by Thalys Henrique")
                 .version("1.0")
                 .contact(contact())

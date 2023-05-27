@@ -4,6 +4,7 @@ import com.devthalys.inventorycontrolsystem.dtos.FieldsListInventoryDto;
 import com.devthalys.inventorycontrolsystem.enums.MovementType;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductAlreadyExistsException;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductNotFoundException;
+import com.devthalys.inventorycontrolsystem.exceptions.SaveMovementException;
 import com.devthalys.inventorycontrolsystem.exceptions.ValueInvalidException;
 import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import com.devthalys.inventorycontrolsystem.models.InventoryModel;
@@ -12,6 +13,8 @@ import com.devthalys.inventorycontrolsystem.repositories.ProductRepository;
 import com.devthalys.inventorycontrolsystem.repositories.InventoryRepository;
 import com.devthalys.inventorycontrolsystem.services.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,13 +35,18 @@ public class InventoryServiceImpl implements InventoryService {
     private Observable observable;
 
     @Override
-    public Optional<InventoryModel> findById(Long id) {
-        return inventoryRepository.findById(id);
+    public List<InventoryModel> findProductByBalanceLessThanQuantityMin() {
+        return inventoryRepository.findProductByBalanceLessThanQuantityMin();
+    }
+
+    @Override
+    public List<InventoryModel> findProductByBalanceGreaterThanQuantityMin() {
+        return inventoryRepository.findProductByBalanceGreaterThanQuantityMin();
     }
 
     public List<InventoryModel> findByProductName(String name){
         if(!inventoryRepository.existsByProductName(name)){
-            throw new ProductNotFoundException("Produto não cadastrado no sistema");
+            throw new ProductNotFoundException("Produto não cadastrado no sistema.");
         }
         return inventoryRepository.findByProductName(name);
     }
@@ -46,14 +54,14 @@ public class InventoryServiceImpl implements InventoryService {
     public List<InventoryModel> findByDateMovementBetween(LocalDateTime startDate, LocalDateTime endDate){
         List<InventoryModel> findDateMovement = inventoryRepository.findByMovementDateBetween(startDate, endDate);
         if(findDateMovement.isEmpty()){
-            throw new ProductNotFoundException("Produto não cadastrado no sistema");
+            throw new ProductNotFoundException("Produto não cadastrado no sistema.");
         }
         return inventoryRepository.findByMovementDateBetween(startDate, endDate);
     }
 
     public List<InventoryModel> findByMovementType(MovementType movementType){
         if(!inventoryRepository.existsByMovementType(movementType)){
-            throw new ProductNotFoundException("Produto não cadastrado no sistema");
+            throw new ProductNotFoundException("Produto não cadastrado no sistema.");
         }
         return inventoryRepository.findByMovementType(movementType);
     }
@@ -68,47 +76,34 @@ public class InventoryServiceImpl implements InventoryService {
         return inventoryRepository.findByOrderByMovementDate();
     }
 
-    @Override
-    public InventoryModel findByProduct(ProductModel product) {
-        return inventoryRepository.findByProduct(product);
+    public void save(InventoryModel inventory){
+        checkMovementBeforeSave(inventory);
+        checkBalance(inventory);
+        generateDocument(inventory);
+
+        inventory.setBalance(inventory.getProduct().getInitialBalance());
+        inventory.setMovementDate(LocalDateTime.now());
+
+        observable.notifyStockChange(inventory);
+        inventoryRepository.save(inventory);
     }
 
     @Override
-    public void updateRegister(InventoryModel inventory){
-        checkBalance(inventory);
-//        checkMovementType(stock);
-        checkExistsProduct(inventory);
-        existsReleaseProduct(inventory);
+    public void update(InventoryModel inventory){
         existsInitialBalance(inventory);
+        checkBalance(inventory);
         generateDocument(inventory);
+
+        inventory.getProduct().setBarCode(inventory.getProduct().getBarCode());
+        inventory.setMovementDate(LocalDateTime.now());
 
         inventoryRepository.save(inventory);
         observable.notifyStockChange(inventory);
     }
 
-    public void saveMovement(InventoryModel stock){
-        checkBalance(stock);
-        existsReleaseProduct(stock);
-        existsInitialBalance(stock);
-        generateDocument(stock);
-        stock.setMovementDate(LocalDateTime.now());
-
-        observable.notifyStockChange(stock);
-        inventoryRepository.save(stock);
-    }
-
-//    public void checkMovementType(StockModel stock){
-//        MovementType movementType = stock.getMovementType();
-//
-//        if(movementType == MovementType.SALDO_INICIAL ||
-//                movementType == MovementType.AJUSTE_ENTRADA ||
-//                movementType == MovementType.AJUSTE_SAIDA){
-//        }
-//    }
-
-    public void existsInitialBalance(InventoryModel stock){
-        MovementType movementType = stock.getMovementType();
-        ProductModel product = stock.getProduct();
+    public void existsInitialBalance(InventoryModel inventory){
+        MovementType movementType = inventory.getMovementType();
+        ProductModel product = inventory.getProduct();
 
         if(movementType == MovementType.SALDO_INICIAL &&
                 inventoryRepository.existsByProductIdAndMovementType(product.getId(), MovementType.SALDO_INICIAL)){
@@ -116,44 +111,35 @@ public class InventoryServiceImpl implements InventoryService {
         }
     }
 
-    public void existsReleaseProduct(InventoryModel stock){
-        MovementType movementType = stock.getMovementType();
-        ProductModel product = stock.getProduct();
-
-        if(!productRepository.existsById(product.getId()) && movementType == MovementType.AJUSTE_ENTRADA){
-            throw new ProductNotFoundException("Não existem lançamentos para esse produto.");
-        } else if(!productRepository.existsById(product.getId()) && movementType == MovementType.AJUSTE_SAIDA){
-            throw new ProductNotFoundException("Não existem lançamentos para esse produto.");
-        }
-    }
-
-    public void checkBalance(InventoryModel stock){
-        int newBalance = stock.getProduct().getInitialBalance() + stock.getBalance();
+    public void checkBalance(InventoryModel inventory){
+        int newBalance = inventory.getProduct().getInitialBalance() + inventory.getBalance();
 
         if(newBalance < 0){
-            throw new ValueInvalidException("Saldo Total não pode ser menor que Quantidade Mínima.");
+            throw new ValueInvalidException("Saldo total não pode ser menor que a quantidade mínima.");
         }
-        stock.setBalance(newBalance);
+        inventory.setBalance(newBalance);
 
-        if(newBalance < stock.getProduct().getQuantityMin()){
-            stock.setSituation("Inferior ao mínimo.");
+        if(newBalance < inventory.getProduct().getQuantityMin()){
+            inventory.setSituation("Saldo inferior ao mínimo.");
         } else {
-            stock.setSituation("OK");
+            inventory.setSituation("Saldo superior ao mínimo.");
         }
     }
 
-    public void checkExistsProduct(InventoryModel inventory){
-        if(!(productRepository.existsById(inventory.getProduct().getId()))){
-            throw new ProductNotFoundException("Produto não cadastrado no sistema.");
+    public void checkMovementBeforeSave(InventoryModel inventory){
+        MovementType movementType = inventory.getMovementType();
+
+        if(!(movementType == MovementType.SALDO_INICIAL || movementType == MovementType.ENTRADA)){
+            throw new SaveMovementException("Apenas os movimentos Saldo Inicial e Entrada são permitidos para novos produtos.");
         }
     }
 
-    public void generateDocument(InventoryModel stock){
-        if(!(stock.getMovementType() == MovementType.ENTRADA
-                || stock.getMovementType() == MovementType.SAIDA)){
-            stock.setDocument(null);
+    public void generateDocument(InventoryModel inventory){
+        if(!(inventory.getMovementType() == MovementType.ENTRADA
+                || inventory.getMovementType() == MovementType.SAIDA)){
+            inventory.setDocument(null);
         }
-        stock.setDocument(stock.getDocument());
+        inventory.setDocument(inventory.getDocument());
     }
 
     public List<FieldsListInventoryDto> listByProductStock() {
@@ -195,11 +181,6 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public InventoryModel findByProductId(ProductModel product) {
         return inventoryRepository.findByProductId(product.getId());
-    }
-
-    @Override
-    public boolean existsByProduct(ProductModel product) {
-        return inventoryRepository.existsByProduct(product);
     }
 
     @Override

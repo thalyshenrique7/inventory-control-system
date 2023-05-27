@@ -32,10 +32,18 @@ public class ProductController {
     @ApiOperation(value = "Find by product name")
     @ApiResponse(code = 200, message = "OK")
     public ResponseEntity<List<ProductModel>> findByName(@PathVariable String name){
-        if(!productService.existsByName(name)){
+        if(productService.findByNameIgnoreCase(name) == null){
             ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(productService.findByName(name));
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findByNameIgnoreCase(name));
+    }
+
+    @GetMapping(value = "/search_barcode/{barcode}")
+    public ResponseEntity<ProductModel> findByBarcode(@PathVariable Long barcode){
+        if(!productService.existsByBarCode(barcode)){
+            throw new ProductNotFoundException("Produto não cadastrado no sistema");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findByBarCode(barcode));
     }
 
     @Transactional

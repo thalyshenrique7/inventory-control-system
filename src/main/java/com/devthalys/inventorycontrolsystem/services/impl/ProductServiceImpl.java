@@ -33,11 +33,12 @@ public class ProductServiceImpl implements ProductService {
                 }).orElseThrow(() -> new ProductNotFoundException("Produto não cadastrado no sistema."));
     }
 
-    public List<ProductModel> findByName(String name){
-        if(!productRepository.existsByName(name)){
+    public List<ProductModel> findByNameIgnoreCase(String name){
+        List<ProductModel> products = productRepository.findByNameIgnoreCase(name);
+        if(products == null){
             throw new ProductNotFoundException("Produto não cadastrado no sistema.");
         }
-        return productRepository.findByName(name);
+        return products;
     }
 
     public ProductModel findByBarCode(Long barCode){
@@ -71,6 +72,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public boolean existsByBarCode(Long barCode) {
+        return productRepository.existsByBarCode(barCode);
+    }
+
+    @Override
     public void update(ProductModel product) {
         productRepository.save(product);
         observable.notifyStockChange(product);
@@ -79,13 +85,5 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteById(Long id) {
         productRepository.deleteById(id);
-    }
-
-    public boolean existsByName(String name){
-        return productRepository.existsByName(name);
-    }
-
-    public boolean existsByBarCode(Long barCode){
-        return productRepository.existsByBarCode(barCode);
     }
 }

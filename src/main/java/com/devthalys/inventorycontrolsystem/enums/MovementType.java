@@ -4,7 +4,5 @@ public enum MovementType {
 
     ENTRADA,
     SAIDA,
-    SALDO_INICIAL,
-    AJUSTE_ENTRADA,
-    AJUSTE_SAIDA
+    SALDO_INICIAL
 }
