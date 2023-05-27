@@ -12,28 +12,38 @@
 ### Functional Requirements:
 ### Products:
 + Only Manager can save, edit and delete products
-+ Only Manager can save movement on stock for types (Initial Balance, Input Adjustment and Output Adjustment)
-+ Must exists only one bar code by product
++ Only Manager can save and update movement on inventory
++ Must exists only one barcode by product
 + Initial balance must be registered only in the product registration, and cannot be edited
 + Quantity Minimum don't be small than 0
 + If Initial Balance greater than 0, movement type is 'Initial Balance'
++ Barcode do not updated after registration
+
+### Filters Products:
+Search by:
++ Name
++ Barcode
 
 ### Inventory:
 
 ### Filters Inventory:
-+ Search 'By Bar Code', 'By Product Name', 'Between Time Periods' and 'By Movement Types'
-+ Orders: 'By Products', 'By Periods', 'By Movement Types'
-+ List with fields: 'Date Movement', 'Product', 'Movement Type',
-'Document', 'Reason', 'Balance' and 'Situation'
+Search by: 
++ Product Name
++ Barcode
++ Between Time Periods
++ Movement Types
++ Orders by Products, Periods and Movement Types
++ List inventory with fields: Date Movement, Product, Movement Type, Document, Reason, Balance and Situation
++ Product Balance < Quantity Minimum
++ Product Balance > Quantity Minimum
 
 ### Movement Registration:
-+ If exists Initial Balance for a product, musn't register again
-+ If not exists a product, throw an exception "Product not register on system"
-+ If movement type is 'Input or Output Adjustment', throw an exception "Don't exists releases for product"
-+ Situation: If balance is small than quantity minimum is register as ' Is small than Quantity Minimum', else is 'OK'
-+ Document: Only register if movement type is 'Input' or 'Output'
++ If the movement is of the entry type, calculate the entry quantity and current balance
++ If the movement is of the exit type, calculate the output quantity and current balance
++ Only initial balance and entry type movements are allowed for new products
++ Situation: If balance is small than quantity minimum is register as 'Is less than quantity minimum', else is 'Is greater than quantity minimum'
++ Document: Only register if movement type is 'Entry' or 'Exit'
 + Must have movement date and time
-+ Calculate initial balance plus current balance
 
 > Author: Thalys Henrique
 
