@@ -5,7 +5,6 @@ import com.devthalys.inventorycontrolsystem.dtos.MovementUpdateDto;
 import com.devthalys.inventorycontrolsystem.enums.MovementType;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductAlreadyExistsException;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductNotFoundException;
-import com.devthalys.inventorycontrolsystem.exceptions.UnauthorizedAccessException;
 import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import com.devthalys.inventorycontrolsystem.models.InventoryModel;
 import com.devthalys.inventorycontrolsystem.services.impl.ProductServiceImpl;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 

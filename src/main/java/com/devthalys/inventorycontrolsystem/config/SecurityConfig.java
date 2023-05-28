@@ -29,11 +29,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable()
                     .and()
                 .authorizeRequests()
-                .antMatchers("/users/save").hasRole("MANAGER")
-                .antMatchers("/products/save").hasRole("MANAGER")
-                .antMatchers("/products/update/**").hasRole("MANAGER")
-                .antMatchers("/inventory/save").hasRole("MANAGER")
-                .antMatchers("/inventory/update/**").hasRole("MANAGER")
+                .antMatchers("/users/save").hasRole("CEO")
+                .antMatchers("/users/update/**").hasAnyRole("CEO", "MANAGER")
+                .antMatchers("/users/delete/**").hasRole("CEO")
+                .antMatchers("/products/save").hasAnyRole("CEO", "MANAGER")
+                .antMatchers("/products/update/**").hasAnyRole("CEO", "MANAGER")
+                .antMatchers("/products/delete/**").hasAnyRole("CEO", "MANAGER")
+                .antMatchers("/inventory/save").hasAnyRole("CEO", "MANAGER")
+                .antMatchers("/inventory/update/**").hasAnyRole("CEO", "MANAGER")
+                .antMatchers("/inventory/delete/**").hasAnyRole("CEO", "MANAGER")
                 .anyRequest().authenticated()
                     .and()
                 .httpBasic();
@@ -46,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .passwordEncoder(passwordEncoder())
                     .withUser("ceo")
                     .password(passwordEncoder().encode("123"))
-                    .roles("MANAGER");
+                    .roles("CEO");
 
             auth
                     .userDetailsService(userService)

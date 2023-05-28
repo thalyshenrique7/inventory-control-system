@@ -81,11 +81,10 @@ public class ProductController {
             throw new ProductNotFoundException("Produto não cadastrado no sistema.");
         }
 
-        ProductModel newProduct = findProduct;
-        newProduct.setName(product.getName());
-        newProduct.setQuantityMin(product.getQuantityMin());
+        findProduct.setName(product.getName());
+        findProduct.setQuantityMin(product.getQuantityMin());
 
-        productService.update(newProduct);
+        productService.update(findProduct);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Produto atualizado com sucesso.");
     }
 }

@@ -3,8 +3,8 @@ package com.devthalys.inventorycontrolsystem.services.impl;
 import com.devthalys.inventorycontrolsystem.enums.MovementType;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductNotFoundException;
 import com.devthalys.inventorycontrolsystem.exceptions.ValueInvalidException;
-import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import com.devthalys.inventorycontrolsystem.models.InventoryModel;
+import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import com.devthalys.inventorycontrolsystem.observers.Observable;
 import com.devthalys.inventorycontrolsystem.repositories.ProductRepository;
 import com.devthalys.inventorycontrolsystem.services.ProductService;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {

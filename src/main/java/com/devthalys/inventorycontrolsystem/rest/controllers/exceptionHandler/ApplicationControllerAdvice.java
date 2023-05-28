@@ -41,9 +41,9 @@ public class ApplicationControllerAdvice {
         return new ApiErrors(errorMessage);
     }
 
-    @ExceptionHandler(UnauthorizedAccessException.class)
+    @ExceptionHandler(UserException.class)
     @ResponseStatus(BAD_REQUEST)
-    public ApiErrors handleUnauthorizedAccessException(UnauthorizedAccessException e){
+    public ApiErrors handleUnauthorizedAccessException(UserException e){
         String errorMessage = e.getMessage();
         return new ApiErrors(errorMessage);
     }
