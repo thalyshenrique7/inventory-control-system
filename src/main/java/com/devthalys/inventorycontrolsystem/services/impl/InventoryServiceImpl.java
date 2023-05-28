@@ -6,30 +6,23 @@ import com.devthalys.inventorycontrolsystem.exceptions.ProductAlreadyExistsExcep
 import com.devthalys.inventorycontrolsystem.exceptions.ProductNotFoundException;
 import com.devthalys.inventorycontrolsystem.exceptions.SaveMovementException;
 import com.devthalys.inventorycontrolsystem.exceptions.ValueInvalidException;
-import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import com.devthalys.inventorycontrolsystem.models.InventoryModel;
+import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import com.devthalys.inventorycontrolsystem.observers.Observable;
-import com.devthalys.inventorycontrolsystem.repositories.ProductRepository;
 import com.devthalys.inventorycontrolsystem.repositories.InventoryRepository;
 import com.devthalys.inventorycontrolsystem.services.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
 
     @Autowired
     private InventoryRepository inventoryRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
 
     @Autowired
     private Observable observable;
@@ -42,6 +35,15 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public List<InventoryModel> findProductByBalanceGreaterThanQuantityMin() {
         return inventoryRepository.findProductByBalanceGreaterThanQuantityMin();
+    }
+
+    @Override
+    public InventoryModel findById(Long id) {
+        return inventoryRepository.findById(id)
+                .map( inventory -> {
+                    inventory.getId();
+                    return inventory;
+                }).orElseThrow(() -> new RuntimeException("Estoque não encontrado"));
     }
 
     public List<InventoryModel> findByProductName(String name){
@@ -101,6 +103,11 @@ public class InventoryServiceImpl implements InventoryService {
         observable.notifyStockChange(inventory);
     }
 
+    @Override
+    public void delete(InventoryModel inventory) {
+        inventoryRepository.delete(inventory);
+    }
+
     public void existsInitialBalance(InventoryModel inventory){
         MovementType movementType = inventory.getMovementType();
         ProductModel product = inventory.getProduct();
@@ -129,8 +136,8 @@ public class InventoryServiceImpl implements InventoryService {
     public void checkMovementBeforeSave(InventoryModel inventory){
         MovementType movementType = inventory.getMovementType();
 
-        if(!(movementType == MovementType.SALDO_INICIAL || movementType == MovementType.ENTRADA)){
-            throw new SaveMovementException("Apenas os movimentos Saldo Inicial e Entrada são permitidos para novos produtos.");
+        if(!(movementType == MovementType.SALDO_INICIAL)){
+            throw new SaveMovementException("Apenas o movimento Saldo Inicial é permitido para novos produtos.");
         }
     }
 

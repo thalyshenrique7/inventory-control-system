@@ -18,6 +18,7 @@ public interface InventoryService {
     List<InventoryModel> findByMovementType(MovementType movementType);
     List<InventoryModel> findByOrderByProduct();
     List<InventoryModel> findByOrderByDateMovement();
+    InventoryModel findById(Long id);
     InventoryModel findByProductId(ProductModel productModel);
     InventoryModel findByProductIdAndMovementType(ProductModel productModel, MovementType movementType);
     boolean existsByProductName(String name);
@@ -26,4 +27,5 @@ public interface InventoryService {
     boolean existsByProductId(Long productId);
     boolean existsByProductIdAndMovementType(Long productId, MovementType movementType);
     void update(InventoryModel inventory);
+    void delete(InventoryModel inventory);
 }

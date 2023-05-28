@@ -13,6 +13,7 @@ public class ChangeObserver implements Observer {
             handleProductChange((ProductModel) observer);
         } else if(observer instanceof InventoryModel){
             handleInventoryChange((InventoryModel) observer);
+            calculateInventory(((InventoryModel) observer).getProduct().getInventory());
         }
     }
 
@@ -36,5 +37,14 @@ public class ChangeObserver implements Observer {
                 + "\nProduct Category: " + inventory.getProductCategory()
                 + "\nDate Movement: " + inventory.getMovementDate()
                 + "\n");
+    }
+
+    public void calculateInventory(InventoryModel inventory){
+        int balance = inventory.getBalance() / 10;
+        int product = inventory.getProduct().getQuantityMin();
+
+        if(balance < product){
+            System.out.println("Alerta: Quantidades em estoque estão abaixo da quantidade mínima!");
+        }
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -131,22 +132,35 @@ public class InventoryController {
     @ApiOperation(value = "Update Register")
     @ApiResponses({ @ApiResponse(code = 204, message = "Update Register Success"),
                     @ApiResponse(code = 404, message = "Product do not registered in system")})
-    public ResponseEntity<Object> update(@PathVariable Long id, @RequestBody @Valid MovementUpdateDto stockDto){
-        ProductModel findStock = productService.findById(id);
-        if(findStock == null){
+    public ResponseEntity<Object> update(@PathVariable Long id, @RequestBody @Valid MovementUpdateDto inventoryDto){
+        ProductModel findInventory = productService.findById(id);
+        if(findInventory == null){
             throw new ProductNotFoundException("Produto não cadastrado no sistema.");
         }
 
-        InventoryModel newStock = findStock.getInventory();
-        newStock.setProduct(findStock.getInventory().getProduct());
-        newStock.setMovementType(stockDto.getMovementType());
-        newStock.setBalance(stockDto.getBalance());
-        newStock.setMovementDate(LocalDateTime.now());
-        newStock.setReason(stockDto.getReason());
-        newStock.setDocument(stockDto.getDocument());
-        newStock.setProductCategory(stockDto.getProductCategory());
+        InventoryModel newInventory = findInventory.getInventory();
+        newInventory.setProduct(findInventory.getInventory().getProduct());
+        newInventory.setMovementType(inventoryDto.getMovementType());
+        newInventory.setBalance(inventoryDto.getBalance());
+        newInventory.setMovementDate(LocalDateTime.now());
+        newInventory.setReason(inventoryDto.getReason());
+        newInventory.setDocument(inventoryDto.getDocument());
+        newInventory.setProductCategory(inventoryDto.getProductCategory());
 
-        inventoryService.update(newStock);
+        inventoryService.update(newInventory);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Registro atualizado com sucesso.");
+    }
+
+    @DeleteMapping(value = "/delete/{id}")
+    @ApiOperation(value = "Delete Register")
+    @ApiResponses({ @ApiResponse(code = 200, message = "Delete Register Success"),
+                    @ApiResponse(code = 404, message = "Inventory not found.")})
+    public ResponseEntity<Object> delete(@PathVariable Long id){
+        InventoryModel inventory = inventoryService.findById(id);
+        if(inventory == null){
+            throw new RuntimeException("Estoque não encontrado");
+        }
+        inventoryService.delete(inventory);
+        return ResponseEntity.status(HttpStatus.OK).body("Estoque deletado com sucesso");
     }
 }

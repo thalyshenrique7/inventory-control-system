@@ -1,5 +1,7 @@
 package com.devthalys.inventorycontrolsystem.config;
 
+import com.devthalys.inventorycontrolsystem.services.impl.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +19,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
+    private UserServiceImpl userService;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -24,6 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable()
                     .and()
                 .authorizeRequests()
+                .antMatchers("/users/save").hasRole("MANAGER")
                 .antMatchers("/products/save").hasRole("MANAGER")
                 .antMatchers("/products/update/**").hasRole("MANAGER")
                 .antMatchers("/inventory/save").hasRole("MANAGER")
@@ -38,13 +44,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             auth
                     .inMemoryAuthentication()
                     .passwordEncoder(passwordEncoder())
-                    .withUser("gerente")
+                    .withUser("ceo")
                     .password(passwordEncoder().encode("123"))
-                    .roles("MANAGER")
-                        .and()
-                    .withUser("operador")
-                    .password(passwordEncoder().encode("456"))
-                    .roles("OPERATOR");
+                    .roles("MANAGER");
+
+            auth
+                    .userDetailsService(userService)
+                    .passwordEncoder(passwordEncoder());
     }
 
     @Override

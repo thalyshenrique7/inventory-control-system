@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 @Builder
 public class MovementUpdateDto {
 
-    private Long inventoryId;
     private MovementType movementType;
-    private int balance;
     private LocalDateTime movementDate;
+    private int balance;
+    private int quantity;
     private String reason;
     private String document;
     private String situation;
