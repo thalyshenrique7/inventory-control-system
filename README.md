@@ -8,7 +8,7 @@
 + Data Base H2
 + Spring Security for implementinng constraints, exists two profiles 'Manager' and 'Operator'
 + Swagger for documentation of endpoints
-+ Observer pattern to send notifications of saved or updated products and movements and whenever the balance of a product is below the minimum quantity
++ Observer pattern send notifications of saved or updated products and movements and whenever the current balance of a product to equals 10 percents is below the minimum quantity
 
 ### Functional Requirements:
 + Only user 'Ceo' can register new users with 2 profiles disponible 'Manager' and 'Operator'
@@ -38,6 +38,7 @@ Search by:
 + Product Balance > Quantity Minimum
 
 ### Movement Registration:
++ Movements types 'Entry' and 'Exit' are allowed just if product exist in inventory
 + If the movement is of the entry type, calculate the entry quantity and current balance
 + If the movement is of the exit type, calculate the output quantity and current balance
 + Only initial balance type movement is allowed for new products
