@@ -11,7 +11,8 @@
 + Observer pattern send notifications of saved or updated products and movements and whenever the current balance of a product to equals 10 percents is below the minimum quantity
 
 ### Functional Requirements:
-+ Only user 'Ceo' can register new users with 2 profiles disponible 'Manager' and 'Operator'
++ Only user 'Ceo' can register new users with 2 profiles disponible 'Manager' and 'Operator' and delete users
++ User 'Manager' can update others users
 
 ### Products and Inventory:
 + Only Ceo and Manager can save, update and delete products and movements
@@ -21,19 +22,24 @@
 + If Initial Balance greater than 0, movement type is 'Initial Balance'
 + Barcode do not updated after registration
 
+### Filters Users:
+#### Search by:
++ List All
++ Login
+
 ### Filters Products:
-Search by:
+#### Search by:
 + Name
 + Barcode
 
 ### Filters Inventory:
-Search by: 
+#### Search by: 
 + Product Name
 + Barcode
-+ Between Time Periods
++ Between Periods
 + Movement Types
 + Orders by Products, Periods and Movement Types
-+ List inventory with fields: Date Movement, Product, Movement Type, Document, Reason, Balance and Situation
++ List inventory with fields: Movement Date, Product, Movement Type, Document, Reason, Balance and Situation
 + Product Balance < Quantity Minimum
 + Product Balance > Quantity Minimum
 
