@@ -1,7 +1,6 @@
 package com.devthalys.inventorycontrolsystem.repositories;
 
 import com.devthalys.inventorycontrolsystem.enums.MovementType;
-import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import com.devthalys.inventorycontrolsystem.models.InventoryModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,10 +10,10 @@ import java.util.List;
 
 public interface InventoryRepository extends JpaRepository<InventoryModel, Long> {
 
-    @Query(" SELECT i FROM InventoryModel i WHERE i.balance < i.product.quantityMin ")
+    @Query(" SELECT i FROM InventoryModel i WHERE i.product.balance < i.product.quantityMin ")
     List<InventoryModel> findProductByBalanceLessThanQuantityMin();
 
-    @Query("SELECT i FROM InventoryModel i WHERE i.balance > i.product.quantityMin ")
+    @Query("SELECT i FROM InventoryModel i WHERE i.product.balance > i.product.quantityMin ")
     List<InventoryModel> findProductByBalanceGreaterThanQuantityMin();
 
     InventoryModel findByProductIdAndMovementType(Long productId, MovementType movementType);

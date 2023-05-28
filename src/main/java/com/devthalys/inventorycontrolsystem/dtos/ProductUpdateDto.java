@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class ProductUpdateDto {
 
     private String name;
-    private Integer quantityMin;
+    private int quantityMin;
+    private int balance;
 }

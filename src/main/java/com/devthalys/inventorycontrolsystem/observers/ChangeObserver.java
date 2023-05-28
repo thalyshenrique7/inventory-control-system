@@ -11,6 +11,7 @@ public class ChangeObserver implements Observer {
     public void onInventoryChange(Object observer) {
         if(observer instanceof ProductModel){
             handleProductChange((ProductModel) observer);
+            calculateInventory(((ProductModel) observer).getInventory().getProduct().getInventory());
         } else if(observer instanceof InventoryModel){
             handleInventoryChange((InventoryModel) observer);
             calculateInventory(((InventoryModel) observer).getProduct().getInventory());
@@ -22,7 +23,7 @@ public class ChangeObserver implements Observer {
                 + "\nProduct Name: " + product.getName()
                 + "\nBarcode: " + product.getBarCode()
                 + "\nQuantity Minimum: " + product.getQuantityMin()
-                + "\nInitial Balance: " + product.getInitialBalance()
+                + "\nBalance: " + product.getBalance()
                 + "\nProduct Category: " + product.getInventory().getProductCategory()
                 + "\n");
     }
@@ -32,7 +33,7 @@ public class ChangeObserver implements Observer {
                 + "\nProduct Name: " + inventory.getProduct().getName()
                 + "\nBarcode: " + inventory.getProduct().getBarCode()
                 + "\nQuantity Minimum: " + inventory.getProduct().getQuantityMin()
-                + "\nInitial Balance: " + inventory.getProduct().getInitialBalance()
+                + "\nBalance: " + inventory.getProduct().getBalance()
                 + "\nMovement Type: " + inventory.getMovementType()
                 + "\nProduct Category: " + inventory.getProductCategory()
                 + "\nDate Movement: " + inventory.getMovementDate()
@@ -40,7 +41,7 @@ public class ChangeObserver implements Observer {
     }
 
     public void calculateInventory(InventoryModel inventory){
-        int balance = inventory.getBalance() / 10;
+        int balance = inventory.getProduct().getBalance();
         int product = inventory.getProduct().getQuantityMin();
 
         if(balance < product){

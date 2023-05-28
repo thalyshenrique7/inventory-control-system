@@ -18,6 +18,5 @@ public class FieldsListInventoryDto {
     private MovementType movementType;
     private String document;
     private String reason;
-    private int balance;
     private String situation;
 }

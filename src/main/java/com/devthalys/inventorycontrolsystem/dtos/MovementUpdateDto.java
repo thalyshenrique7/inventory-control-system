@@ -17,7 +17,6 @@ public class MovementUpdateDto {
 
     private MovementType movementType;
     private LocalDateTime movementDate;
-    private int balance;
     private int quantity;
     private String reason;
     private String document;

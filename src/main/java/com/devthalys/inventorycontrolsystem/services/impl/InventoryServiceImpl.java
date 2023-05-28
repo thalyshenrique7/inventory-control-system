@@ -5,7 +5,6 @@ import com.devthalys.inventorycontrolsystem.enums.MovementType;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductAlreadyExistsException;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductNotFoundException;
 import com.devthalys.inventorycontrolsystem.exceptions.SaveMovementException;
-import com.devthalys.inventorycontrolsystem.exceptions.ValueInvalidException;
 import com.devthalys.inventorycontrolsystem.models.InventoryModel;
 import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import com.devthalys.inventorycontrolsystem.observers.Observable;
@@ -83,7 +82,6 @@ public class InventoryServiceImpl implements InventoryService {
         checkBalance(inventory);
         generateDocument(inventory);
 
-        inventory.setBalance(inventory.getProduct().getInitialBalance());
         inventory.setMovementDate(LocalDateTime.now());
 
         observable.notifyStockChange(inventory);
@@ -119,14 +117,18 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     public void checkBalance(InventoryModel inventory){
-        int newBalance = inventory.getProduct().getInitialBalance() + inventory.getBalance();
+        MovementType movementType = inventory.getMovementType();
+        int currentBalance = inventory.getProduct().getBalance();
 
-        if(newBalance < 0){
-            throw new ValueInvalidException("Saldo total não pode ser menor que a quantidade mínima.");
+        if(movementType == MovementType.ENTRADA) {
+            int newBalance = currentBalance + inventory.getQuantity();
+            inventory.getProduct().setBalance(newBalance);
+        } else if(movementType == MovementType.SAIDA){
+            int newBalance = currentBalance - inventory.getQuantity();
+            inventory.getProduct().setBalance(newBalance);
         }
-        inventory.setBalance(newBalance);
 
-        if(newBalance < inventory.getProduct().getQuantityMin()){
+        if(currentBalance < inventory.getProduct().getQuantityMin()){
             inventory.setSituation("Saldo inferior ao mínimo.");
         } else {
             inventory.setSituation("Saldo superior ao mínimo.");
@@ -149,7 +151,7 @@ public class InventoryServiceImpl implements InventoryService {
         inventory.setDocument(inventory.getDocument());
     }
 
-    public List<FieldsListInventoryDto> listByProductStock() {
+    public List<FieldsListInventoryDto> listByProductInventory() {
         List<InventoryModel> stockList = inventoryRepository.findByOrderByMovementDate();
         List<FieldsListInventoryDto> stockDtoList = new ArrayList<>();
 
@@ -160,7 +162,6 @@ public class InventoryServiceImpl implements InventoryService {
             stockDto.setMovementType(stock.getMovementType());
             stockDto.setDocument(stock.getDocument());
             stockDto.setReason(stock.getReason());
-            stockDto.setBalance(stock.getBalance());
             stockDto.setSituation(stock.getSituation());
 
             stockDtoList.add(stockDto);

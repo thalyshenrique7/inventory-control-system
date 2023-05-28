@@ -31,9 +31,6 @@ public class InventoryModel {
     private String situation;
 
     @Column
-    private int balance;
-
-    @Column
     private int quantity;
 
     @Column

@@ -55,13 +55,12 @@ public class ProductServiceImpl implements ProductService {
         product.setName(product.getName());
         product.setBarCode(product.getBarCode());
         product.setQuantityMin(product.getQuantityMin());
-        product.setInitialBalance(product.getInitialBalance());
+        product.setBalance(product.getBalance());
 
-        if(product.getInitialBalance() > 0) {
+        if(product.getBalance() > 0) {
             InventoryModel inventory = new InventoryModel();
             inventory.setMovementType(MovementType.SALDO_INICIAL);
             inventory.setProductCategory(product.getInventory().getProductCategory());
-            inventory.setBalance(product.getInitialBalance());
             inventory.setMovementDate(LocalDateTime.now());
             product.setInventory(inventory);
             inventory.setProduct(product);

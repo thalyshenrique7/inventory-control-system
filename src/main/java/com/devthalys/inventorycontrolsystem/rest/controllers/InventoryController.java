@@ -84,8 +84,8 @@ public class InventoryController {
     @GetMapping(value = "/list_inventory")
     @ApiOperation(value = "Product list on inventory")
     @ApiResponse(code = 200, message = "OK")
-    public ResponseEntity<List<FieldsListInventoryDto>> listByProductStock() {
-        return ResponseEntity.status(HttpStatus.OK).body(inventoryService.listByProductStock());
+    public ResponseEntity<List<FieldsListInventoryDto>> listByProductInventory() {
+        return ResponseEntity.status(HttpStatus.OK).body(inventoryService.listByProductInventory());
     }
 
     @GetMapping(value = "/list_balance_less")
@@ -131,15 +131,15 @@ public class InventoryController {
     @ApiResponses({ @ApiResponse(code = 204, message = "Update Register Success"),
                     @ApiResponse(code = 404, message = "Product do not registered in system")})
     public ResponseEntity<Object> update(@PathVariable Long id, @RequestBody @Valid MovementUpdateDto inventoryDto){
-        ProductModel findInventory = productService.findById(id);
-        if(findInventory == null){
+        ProductModel product = productService.findById(id);
+        if(product == null){
             throw new ProductNotFoundException("Produto não cadastrado no sistema.");
         }
 
-        InventoryModel newInventory = findInventory.getInventory();
-        newInventory.setProduct(findInventory.getInventory().getProduct());
+        InventoryModel newInventory = product.getInventory();
+        newInventory.setProduct(product.getInventory().getProduct());
         newInventory.setMovementType(inventoryDto.getMovementType());
-        newInventory.setBalance(inventoryDto.getBalance());
+        newInventory.setQuantity(inventoryDto.getQuantity());
         newInventory.setMovementDate(LocalDateTime.now());
         newInventory.setReason(inventoryDto.getReason());
         newInventory.setDocument(inventoryDto.getDocument());

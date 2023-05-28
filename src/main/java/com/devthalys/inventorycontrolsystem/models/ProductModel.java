@@ -29,8 +29,8 @@ public class ProductModel {
     @Column(nullable = false)
     private int quantityMin;
 
-    @Column(nullable = false)
-    private int initialBalance;
+    @Column
+    private int balance;
 
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonBackReference
