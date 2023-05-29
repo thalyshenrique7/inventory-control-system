@@ -8,7 +8,8 @@
 + MySQL Database
 + Spring Security for implementinng constraints, exists two profiles 'Manager' and 'Operator'
 + Swagger for documentation of endpoints
-+ Observer pattern send notifications of saved or updated products and movements and whenever the current balance of a product to equals 10 percents is below the minimum quantity
++ Observer pattern send notifications of saved or updated products and movements and whenever the current balance of a product is below the minimum quantity
++ Scheduled to delete reports of inventories deleted after 30 days
 
 ### Functional Requirements:
 + Only user 'Ceo' can register new users with 2 profiles disponible 'Manager' and 'Operator' and delete users
@@ -51,6 +52,7 @@
 + Situation: If balance is small than quantity minimum is register as 'Is less than quantity minimum', else is 'Is greater than quantity minimum'
 + Document: Only register if movement type is 'Entry' or 'Exit'
 + Must have movement date and time
++ Reports of inventories deleted must be saved in a bin
 
 > Author: Thalys Henrique
 
