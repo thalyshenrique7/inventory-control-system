@@ -1,18 +1,18 @@
 package com.devthalys.inventorycontrolsystem.observers;
 
 import com.devthalys.inventorycontrolsystem.interfaces.Observer;
-import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import com.devthalys.inventorycontrolsystem.models.InventoryModel;
+import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ChangeObserver implements Observer {
     @Override
     public void onInventoryChange(Object observer) {
-        if(observer instanceof ProductModel){
+        if (observer instanceof ProductModel) {
             handleProductChange((ProductModel) observer);
             calculateInventory(((ProductModel) observer).getInventory().getProduct().getInventory());
-        } else if(observer instanceof InventoryModel){
+        } else if (observer instanceof InventoryModel) {
             handleInventoryChange((InventoryModel) observer);
             calculateInventory(((InventoryModel) observer).getProduct().getInventory());
         }
@@ -40,11 +40,11 @@ public class ChangeObserver implements Observer {
                 + "\n");
     }
 
-    public void calculateInventory(InventoryModel inventory){
+    public void calculateInventory(InventoryModel inventory) {
         int balance = inventory.getProduct().getBalance();
         int product = inventory.getProduct().getQuantityMin();
 
-        if(balance < product){
+        if (balance < product) {
             System.out.println("Alerta: Quantidades em estoque estão abaixo da quantidade mínima!");
         }
     }

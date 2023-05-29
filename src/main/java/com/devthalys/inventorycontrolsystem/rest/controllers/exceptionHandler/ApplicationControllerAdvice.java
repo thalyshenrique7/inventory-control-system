@@ -61,4 +61,11 @@ public class ApplicationControllerAdvice {
         String errorMessage = e.getMessage();
         return new ApiErrors(errorMessage);
     }
+
+    @ExceptionHandler(InventoryException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ApiErrors handleInventoryException(InventoryException e){
+        String errorMessage = e.getMessage();
+        return new ApiErrors(errorMessage);
+    }
 }

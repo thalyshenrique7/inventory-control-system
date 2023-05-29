@@ -3,6 +3,7 @@ package com.devthalys.inventorycontrolsystem.rest.controllers;
 import com.devthalys.inventorycontrolsystem.dtos.FieldsListInventoryDto;
 import com.devthalys.inventorycontrolsystem.dtos.MovementUpdateDto;
 import com.devthalys.inventorycontrolsystem.enums.MovementType;
+import com.devthalys.inventorycontrolsystem.exceptions.InventoryException;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductAlreadyExistsException;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductNotFoundException;
 import com.devthalys.inventorycontrolsystem.models.ProductModel;
@@ -152,11 +153,11 @@ public class InventoryController {
     @DeleteMapping(value = "/delete/{id}")
     @ApiOperation(value = "Delete Register")
     @ApiResponses({ @ApiResponse(code = 200, message = "Delete Register Success"),
-                    @ApiResponse(code = 404, message = "Inventory not found.")})
+                    @ApiResponse(code = 404, message = "Inventory do not registered in system or not exists.")})
     public ResponseEntity<Object> delete(@PathVariable Long id){
         InventoryModel inventory = inventoryService.findById(id);
         if(inventory == null){
-            throw new RuntimeException("Estoque não encontrado");
+            throw new InventoryException("Estoque não cadastrado no sistema ou não existe.");
         }
         inventoryService.delete(inventory);
         return ResponseEntity.status(HttpStatus.OK).body("Estoque deletado com sucesso");
