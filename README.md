@@ -5,7 +5,7 @@
 > Status: Developing ⚠️
 
 ### Non-Functional Requirements
-+ Data Base H2
++ MySQL Database
 + Spring Security for implementinng constraints, exists two profiles 'Manager' and 'Operator'
 + Swagger for documentation of endpoints
 + Observer pattern send notifications of saved or updated products and movements and whenever the current balance of a product to equals 10 percents is below the minimum quantity
