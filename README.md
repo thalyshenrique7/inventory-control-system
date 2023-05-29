@@ -54,6 +54,26 @@
 + Must have movement date and time
 + Reports of inventories deleted must be saved in a bin
 
+> Technologies Used:
+
+<table>
+<tr align="center">
+<td>Java</td>
+<td>Spring Boot</td>
+<td>MySQL</td>
+<td>Swagger</td>
+<td>JUnit</td>
+</tr>
+
+<tr align="center">
+<td>11</td>
+<td>2.7.10</td>
+<td>8.0.32</td>
+<td>2.9.2</td>
+<td>5</td>
+</tr>
+</table>
+
 > Author: Thalys Henrique
 
 https://www.linkedin.com/in/thalyshenrique7/
