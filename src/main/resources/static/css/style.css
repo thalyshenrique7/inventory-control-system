@@ -1,15 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
+
 * {
     margin: 0;
+    border: 0;
     padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
 }
 
 h1 {
-    margin: 40px 0 40px 0;
     color: white;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    position: relative;
 }
 
 body {
-    background-color: black;
+    background: linear-gradient(45deg, #000000, #4a00e0);
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    min-width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .box, form {
@@ -18,7 +31,6 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-family: "Segoe UI";
 }
 
 input {

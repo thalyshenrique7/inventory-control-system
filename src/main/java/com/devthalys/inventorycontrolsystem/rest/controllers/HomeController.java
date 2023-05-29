@@ -13,6 +13,6 @@ public class HomeController {
 
     @RequestMapping(value = "/edit_product")
     public String editProduct(){
-        return "edit_product";
+        return "update_product";
     }
 }
