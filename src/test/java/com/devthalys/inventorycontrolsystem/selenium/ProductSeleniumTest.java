@@ -20,7 +20,7 @@ public class ProductSeleniumTest {
         navegator.findElement(By.xpath("/html/body/div/form/input[1]")).click();
         navegator.findElement(By.xpath("/html/body/div/form/input[1]")).sendKeys("apple");
         navegator.findElement(By.xpath("/html/body/div/form/input[2]")).click();
-        navegator.findElement(By.xpath("/html/body/div/form/input[2]")).sendKeys("99992");
+        navegator.findElement(By.xpath("/html/body/div/form/input[2]")).sendKeys("99993");
         navegator.findElement(By.xpath("/html/body/div/form/input[3]")).click();
         navegator.findElement(By.xpath("/html/body/div/form/input[3]")).sendKeys("100");
         navegator.findElement(By.xpath("/html/body/div/form/input[4]")).click();

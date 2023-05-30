@@ -17,8 +17,10 @@ function showMessage(message) {
 }
 
 function register(){
+    const formulary = document.querySelector("form");
+    const id = formulary.getAttribute("data-id");
 
-    fetch("http://localhost:8081/server/products/update/{1}",
+    fetch(`http://localhost:8081/server/products/update/${id}`,
         {
             headers: {
                 "Accept": "application/json",
