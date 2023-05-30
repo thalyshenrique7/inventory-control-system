@@ -9,5 +9,4 @@ class StockControllerSystemApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
