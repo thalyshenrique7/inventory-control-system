@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface BinRepository extends JpaRepository<BinModel, Long> {
     List<BinModel> findByDeleted(boolean deleted);
+    void deleteById(Long id);
 }
