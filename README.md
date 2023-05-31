@@ -55,6 +55,16 @@
 + Must have movement date and time
 + Reports of inventories deleted must be saved in a bin
 
+Screens created for now:
+
+> Register Product
+
+![Screen Register Product](https://github.com/thalyshenrique7/inventory-control-system/assets/100730757/ef409cfe-52fa-4438-aef9-5bf1ae9f3067)
+
+> Update Product
+
+![Screen Update Product](https://github.com/thalyshenrique7/inventory-control-system/assets/100730757/f77e07b9-898d-4e02-b479-0d80057c621e)
+
 > Technologies Used:
 
 <table>
@@ -64,6 +74,7 @@
 <td>MySQL</td>
 <td>Swagger</td>
 <td>JUnit</td>
+<td>Selenium</td>
 </tr>
 
 <tr align="center">
@@ -72,6 +83,7 @@
 <td>8.0.32</td>
 <td>2.9.2</td>
 <td>5</td>
+<td>4.9.1</td>
 </tr>
 </table>
 
