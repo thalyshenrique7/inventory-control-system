@@ -6,11 +6,13 @@ import com.devthalys.inventorycontrolsystem.exceptions.ProductAlreadyExistsExcep
 import com.devthalys.inventorycontrolsystem.exceptions.ProductNotFoundException;
 import com.devthalys.inventorycontrolsystem.exceptions.SaveMovementException;
 import com.devthalys.inventorycontrolsystem.models.InventoryModel;
+import com.devthalys.inventorycontrolsystem.models.InvoiceModel;
 import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import com.devthalys.inventorycontrolsystem.models.BinModel;
 import com.devthalys.inventorycontrolsystem.observers.Observable;
 import com.devthalys.inventorycontrolsystem.repositories.InventoryRepository;
 import com.devthalys.inventorycontrolsystem.repositories.BinRepository;
+import com.devthalys.inventorycontrolsystem.repositories.InvoiceRepository;
 import com.devthalys.inventorycontrolsystem.services.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,9 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Autowired
     private InventoryRepository inventoryRepository;
+
+    @Autowired
+    private InvoiceRepository invoiceRepository;
 
     @Autowired
     private BinRepository binInventory;
@@ -80,6 +85,24 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public List<InventoryModel> findByOrderByDateMovement() {
         return inventoryRepository.findByOrderByMovementDate();
+    }
+
+    public List<FieldsListInventoryDto> listByProductInventory() {
+        List<InventoryModel> stockList = inventoryRepository.findByOrderByMovementDate();
+        List<FieldsListInventoryDto> stockDtoList = new ArrayList<>();
+
+        for (InventoryModel stock : stockList) {
+            FieldsListInventoryDto stockDto = new FieldsListInventoryDto();
+            stockDto.setMovementDate(stock.getMovementDate());
+            stockDto.setProduct(stock.getProduct());
+            stockDto.setMovementType(stock.getMovementType());
+            stockDto.setDocument(stock.getDocument());
+            stockDto.setReason(stock.getReason());
+            stockDto.setSituation(stock.getSituation());
+
+            stockDtoList.add(stockDto);
+        }
+        return stockDtoList;
     }
 
     public void save(InventoryModel inventory){
@@ -145,6 +168,8 @@ public class InventoryServiceImpl implements InventoryService {
         } else if(movementType == MovementType.SAIDA){
             int newBalance = currentBalance - inventory.getQuantity();
             inventory.getProduct().setBalance(newBalance);
+
+            generateInvoice(inventory);
         }
 
         if(currentBalance < inventory.getProduct().getQuantityMin()){
@@ -170,22 +195,21 @@ public class InventoryServiceImpl implements InventoryService {
         inventory.setDocument(inventory.getDocument());
     }
 
-    public List<FieldsListInventoryDto> listByProductInventory() {
-        List<InventoryModel> stockList = inventoryRepository.findByOrderByMovementDate();
-        List<FieldsListInventoryDto> stockDtoList = new ArrayList<>();
+    public void generateInvoice(InventoryModel inventory){
+        InvoiceModel invoice = new InvoiceModel();
+        invoice.setProductId(inventory.getProduct().getId());
+        invoice.setProductName(inventory.getProduct().getName());
+        invoice.setQuantity(inventory.getQuantity());
+        invoice.setPriceUnit(inventory.getProduct().getPrice());
+        invoice.setSaleDate(LocalDateTime.now());
 
-        for (InventoryModel stock : stockList) {
-            FieldsListInventoryDto stockDto = new FieldsListInventoryDto();
-            stockDto.setMovementDate(stock.getMovementDate());
-            stockDto.setProduct(stock.getProduct());
-            stockDto.setMovementType(stock.getMovementType());
-            stockDto.setDocument(stock.getDocument());
-            stockDto.setReason(stock.getReason());
-            stockDto.setSituation(stock.getSituation());
+        calculatePriceTotal(invoice, inventory);
+        invoiceRepository.save(invoice);
+    }
 
-            stockDtoList.add(stockDto);
-        }
-        return stockDtoList;
+    public void calculatePriceTotal(InvoiceModel invoice, InventoryModel inventory){
+        float calculate = inventory.getQuantity() * inventory.getProduct().getPrice();
+        invoice.setPriceTotal(calculate);
     }
 
     public boolean existsByProductName(String name){

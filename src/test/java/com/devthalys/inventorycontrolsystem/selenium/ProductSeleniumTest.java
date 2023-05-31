@@ -34,4 +34,21 @@ public class ProductSeleniumTest {
 
         navegator.quit();
     }
+
+    @Test
+    public void updateProduct(){
+        System.setProperty("webdriver.edge.driver", "src\\drive\\msedgedriver.exe");
+        System.setProperty("webdriver.http.factory", "jdk-http-client");
+        WebDriver navegator = new EdgeDriver();
+
+        navegator.get("http://ceo:123@localhost:8081/server/update_product");
+
+        navegator.findElement(By.xpath("/html/body/div/form/input[1]")).click();
+        navegator.findElement(By.xpath("/html/body/div/form/input[1]")).sendKeys("Iphone 7");
+        navegator.findElement(By.xpath("/html/body/div/form/input[2]")).click();
+        navegator.findElement(By.xpath("/html/body/div/form/input[2]")).sendKeys("10");
+        navegator.findElement(By.xpath("/html/body/div/form/button")).click();
+
+        navegator.quit();
+    }
 }

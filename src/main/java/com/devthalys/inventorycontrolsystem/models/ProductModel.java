@@ -32,6 +32,9 @@ public class ProductModel {
     @Column
     private int balance;
 
+    @Column
+    private float price;
+
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonBackReference
     private InventoryModel inventory;

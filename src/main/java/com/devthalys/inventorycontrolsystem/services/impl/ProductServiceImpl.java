@@ -56,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
         product.setBarCode(product.getBarCode());
         product.setQuantityMin(product.getQuantityMin());
         product.setBalance(product.getBalance());
+        product.setPrice(product.getPrice());
 
         if(product.getBalance() > 0) {
             InventoryModel inventory = new InventoryModel();
