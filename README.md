@@ -55,7 +55,7 @@
 + Must have movement date and time
 + Reports of inventories deleted must be saved in a bin
 
-Screens created for now:
+### Screens created for now:
 
 > Register Product
 
