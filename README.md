@@ -48,6 +48,7 @@
 + Movements types 'Entry' and 'Exit' are allowed just if product exist in inventory
 + If the movement is of the entry type, calculate the entry quantity and current balance
 + If the movement is of the exit type, calculate the output quantity and current balance
++ If movement type is 'Output', generate invoice for this product calculating price total
 + Only initial balance type movement is allowed for new products
 + Situation: If balance is small than quantity minimum is register as 'Is less than quantity minimum', else is 'Is greater than quantity minimum'
 + Document: Only register if movement type is 'Entry' or 'Exit'
