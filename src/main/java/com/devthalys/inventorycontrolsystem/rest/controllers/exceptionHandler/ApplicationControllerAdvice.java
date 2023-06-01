@@ -68,4 +68,11 @@ public class ApplicationControllerAdvice {
         String errorMessage = e.getMessage();
         return new ApiErrors(errorMessage);
     }
+
+    @ExceptionHandler(InvoiceException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ApiErrors handleInvoiceException(InvoiceException e){
+        String errorMessage = e.getMessage();
+        return new ApiErrors(errorMessage);
+    }
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -43,6 +44,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findByLogin(login));
     }
 
+    @Transactional
     @PostMapping(value = "/save")
     @ApiOperation(value = "Save User")
     @ApiResponses({ @ApiResponse(code = 201, message = "User register success"),
@@ -56,6 +58,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
 
+    @Transactional
     @DeleteMapping(value = "/delete/{login}")
     @ApiOperation(value = "Delete User")
     @ApiResponses({ @ApiResponse(code = 204, message = "User deleted success"),
@@ -71,6 +74,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Usuário deletado com sucesso.");
     }
 
+    @Transactional
     @PutMapping(value = "/update/{login}")
     @ApiOperation(value = "Update User")
     @ApiResponses({ @ApiResponse(code = 204, message = "User updated success"),

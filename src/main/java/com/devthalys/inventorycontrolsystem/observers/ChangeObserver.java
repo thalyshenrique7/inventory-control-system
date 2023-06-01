@@ -24,6 +24,7 @@ public class ChangeObserver implements Observer {
                 + "\nBarcode: " + product.getBarCode()
                 + "\nQuantity Minimum: " + product.getQuantityMin()
                 + "\nBalance: " + product.getBalance()
+                + "\nPrice: " + product.getPrice()
                 + "\nProduct Category: " + product.getInventory().getProductCategory()
                 + "\n");
     }
@@ -34,6 +35,7 @@ public class ChangeObserver implements Observer {
                 + "\nBarcode: " + inventory.getProduct().getBarCode()
                 + "\nQuantity Minimum: " + inventory.getProduct().getQuantityMin()
                 + "\nBalance: " + inventory.getProduct().getBalance()
+                + "\nPrice Unit: " + inventory.getProduct().getPrice()
                 + "\nMovement Type: " + inventory.getMovementType()
                 + "\nProduct Category: " + inventory.getProductCategory()
                 + "\nDate Movement: " + inventory.getMovementDate()

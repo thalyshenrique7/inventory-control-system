@@ -5,6 +5,7 @@ import com.devthalys.inventorycontrolsystem.enums.MovementType;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductAlreadyExistsException;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductNotFoundException;
 import com.devthalys.inventorycontrolsystem.exceptions.SaveMovementException;
+import com.devthalys.inventorycontrolsystem.exceptions.ValueInvalidException;
 import com.devthalys.inventorycontrolsystem.models.InventoryModel;
 import com.devthalys.inventorycontrolsystem.models.InvoiceModel;
 import com.devthalys.inventorycontrolsystem.models.ProductModel;
@@ -120,6 +121,7 @@ public class InventoryServiceImpl implements InventoryService {
     public void update(InventoryModel inventory){
         existsInitialBalance(inventory);
         checkBalance(inventory);
+        checkQuantityStock(inventory);
         generateDocument(inventory);
 
         inventory.getProduct().setBarCode(inventory.getProduct().getBarCode());
@@ -184,6 +186,16 @@ public class InventoryServiceImpl implements InventoryService {
 
         if(!(movementType == MovementType.SALDO_INICIAL)){
             throw new SaveMovementException("Apenas o movimento Saldo Inicial é permitido para novos produtos.");
+        }
+    }
+
+    public void checkQuantityStock(InventoryModel inventory){
+        MovementType movementType = inventory.getMovementType();
+
+        if(movementType == MovementType.SAIDA){
+            if(inventory.getQuantity() > inventory.getProduct().getBalance()){
+                throw new ValueInvalidException("A quantidade informada não está disponível em estoque.");
+            }
         }
     }
 

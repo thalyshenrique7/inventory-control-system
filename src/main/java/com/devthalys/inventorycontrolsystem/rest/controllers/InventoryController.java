@@ -150,6 +150,7 @@ public class InventoryController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Registro atualizado com sucesso.");
     }
 
+    @Transactional
     @DeleteMapping(value = "/delete/{id}")
     @ApiOperation(value = "Delete Register")
     @ApiResponses({ @ApiResponse(code = 200, message = "Delete Register Success"),

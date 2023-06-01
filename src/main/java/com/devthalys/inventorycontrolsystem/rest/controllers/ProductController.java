@@ -58,6 +58,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(product));
     }
 
+    @Transactional
     @DeleteMapping(value = "/delete/{id}")
     @ApiOperation(value = "Delete Product")
     @ApiResponses({ @ApiResponse(code = 200, message = "Product deleted success"),
