@@ -18,13 +18,15 @@ public class ProductSeleniumTest {
         navegator.get("http://ceo:123@localhost:8081/server/");
 
         navegator.findElement(By.xpath("/html/body/div/form/input[1]")).click();
-        navegator.findElement(By.xpath("/html/body/div/form/input[1]")).sendKeys("apple");
+        navegator.findElement(By.xpath("/html/body/div/form/input[1]")).sendKeys("Iphone Teste");
         navegator.findElement(By.xpath("/html/body/div/form/input[2]")).click();
-        navegator.findElement(By.xpath("/html/body/div/form/input[2]")).sendKeys("99993");
+        navegator.findElement(By.xpath("/html/body/div/form/input[2]")).sendKeys("2001");
         navegator.findElement(By.xpath("/html/body/div/form/input[3]")).click();
         navegator.findElement(By.xpath("/html/body/div/form/input[3]")).sendKeys("100");
         navegator.findElement(By.xpath("/html/body/div/form/input[4]")).click();
         navegator.findElement(By.xpath("/html/body/div/form/input[4]")).sendKeys("1000");
+        navegator.findElement(By.xpath("/html/body/div/form/input[5]")).click();
+        navegator.findElement(By.xpath("/html/body/div/form/input[5]")).sendKeys("999.90");
 
         WebElement selectElement = navegator.findElement(By.xpath("//*[@id=\"productCategory\"]"));
         Select select = new Select(selectElement);
@@ -44,9 +46,9 @@ public class ProductSeleniumTest {
         navegator.get("http://ceo:123@localhost:8081/server/update_product");
 
         navegator.findElement(By.xpath("/html/body/div/form/input[1]")).click();
-        navegator.findElement(By.xpath("/html/body/div/form/input[1]")).sendKeys("Iphone 7");
+        navegator.findElement(By.xpath("/html/body/div/form/input[1]")).sendKeys("Iphone Teste 2");
         navegator.findElement(By.xpath("/html/body/div/form/input[2]")).click();
-        navegator.findElement(By.xpath("/html/body/div/form/input[2]")).sendKeys("10");
+        navegator.findElement(By.xpath("/html/body/div/form/input[2]")).sendKeys("50");
         navegator.findElement(By.xpath("/html/body/div/form/button")).click();
 
         navegator.quit();

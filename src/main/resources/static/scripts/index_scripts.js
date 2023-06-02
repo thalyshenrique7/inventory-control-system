@@ -4,6 +4,7 @@ const nameInput = document.querySelector(".name")
 const barCodeInput = document.querySelector(".barCode")
 const quantityMinInput = document.querySelector(".quantityMin")
 const balanceInput = document.querySelector(".balance")
+const priceInput = document.querySelector(".price")
 const productCategorySelect = document.querySelector(".productCategory");
 
 function showMessage(message) {
@@ -34,6 +35,7 @@ function register(){
                 barCode: barCodeInput.value,
                 quantityMin: quantityMinInput.value,
                 balance: balanceInput.value,
+                price: priceInput.value,
                 inventory: {
                 productCategory: productCategorySelect.value
                 }
@@ -63,6 +65,7 @@ function clean(){
         barCodeInput.value = ""
         quantityMinInput.value = ""
         balanceInput.value = ""
+        priceInput.value = ""
         productCategorySelect.value = ""
 }
 

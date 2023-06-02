@@ -6,14 +6,12 @@ import com.devthalys.inventorycontrolsystem.exceptions.ProductAlreadyExistsExcep
 import com.devthalys.inventorycontrolsystem.exceptions.ProductNotFoundException;
 import com.devthalys.inventorycontrolsystem.exceptions.SaveMovementException;
 import com.devthalys.inventorycontrolsystem.exceptions.ValueInvalidException;
-import com.devthalys.inventorycontrolsystem.models.InventoryModel;
-import com.devthalys.inventorycontrolsystem.models.InvoiceModel;
-import com.devthalys.inventorycontrolsystem.models.ProductModel;
-import com.devthalys.inventorycontrolsystem.models.BinModel;
+import com.devthalys.inventorycontrolsystem.models.*;
 import com.devthalys.inventorycontrolsystem.observers.Observable;
 import com.devthalys.inventorycontrolsystem.repositories.InventoryRepository;
 import com.devthalys.inventorycontrolsystem.repositories.BinRepository;
 import com.devthalys.inventorycontrolsystem.repositories.InvoiceRepository;
+import com.devthalys.inventorycontrolsystem.repositories.ReportRepository;
 import com.devthalys.inventorycontrolsystem.services.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +28,9 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Autowired
     private InvoiceRepository invoiceRepository;
+
+    @Autowired
+    private ReportRepository reportRepository;
 
     @Autowired
     private BinRepository binInventory;
@@ -113,8 +114,9 @@ public class InventoryServiceImpl implements InventoryService {
 
         inventory.setMovementDate(LocalDateTime.now());
 
-        observable.notifyStockChange(inventory);
         inventoryRepository.save(inventory);
+        observable.notifyStockChange(inventory);
+        saveReport(inventory);
     }
 
     @Override
@@ -129,24 +131,12 @@ public class InventoryServiceImpl implements InventoryService {
 
         inventoryRepository.save(inventory);
         observable.notifyStockChange(inventory);
+        saveReport(inventory);
     }
 
     @Override
     public void delete(InventoryModel inventory) {
-        BinModel bin = new BinModel();
-        bin.setName(inventory.getProduct().getName());
-        bin.setBarCode(inventory.getProduct().getBarCode());
-        bin.setQuantityMin(inventory.getProduct().getQuantityMin());
-        bin.setBalance(inventory.getProduct().getBalance());
-        bin.setReason(inventory.getReason());
-        bin.setDocument(inventory.getDocument());
-        bin.setSituation(inventory.getSituation());
-        bin.setDeletionDate(LocalDateTime.now());
-        bin.setDeleted(true);
-        bin.setMovementDate(inventory.getMovementDate());
-        bin.setProductCategory(inventory.getProductCategory());
-        binInventory.save(bin);
-
+        saveBin(inventory);
         inventoryRepository.delete(inventory);
     }
 
@@ -222,6 +212,39 @@ public class InventoryServiceImpl implements InventoryService {
     public void calculatePriceTotal(InvoiceModel invoice, InventoryModel inventory){
         float calculate = inventory.getQuantity() * inventory.getProduct().getPrice();
         invoice.setPriceTotal(calculate);
+    }
+
+    public void saveBin(InventoryModel inventory){
+        BinModel bin = new BinModel();
+        bin.setName(inventory.getProduct().getName());
+        bin.setBarCode(inventory.getProduct().getBarCode());
+        bin.setQuantityMin(inventory.getProduct().getQuantityMin());
+        bin.setBalance(inventory.getProduct().getBalance());
+        bin.setReason(inventory.getReason());
+        bin.setDocument(inventory.getDocument());
+        bin.setSituation(inventory.getSituation());
+        bin.setDeletionDate(LocalDateTime.now());
+        bin.setDeleted(true);
+        bin.setMovementDate(inventory.getMovementDate());
+        bin.setProductCategory(inventory.getProductCategory());
+        binInventory.save(bin);
+    }
+
+    public void saveReport(InventoryModel inventory){
+        ReportModel report = new ReportModel();
+        report.setReason(inventory.getReason());
+        report.setDocument(inventory.getDocument());
+        report.setSituation(inventory.getSituation());
+        report.setQuantity(inventory.getQuantity());
+        report.setMovementDate(inventory.getMovementDate());
+        report.setProductName(inventory.getProduct().getName());
+        report.setBarCode(inventory.getProduct().getBarCode());
+        report.setQuantityMin(inventory.getProduct().getQuantityMin());
+        report.setBalance(inventory.getProduct().getBalance());
+        report.setPriceUnit(inventory.getProduct().getPrice());
+        report.setMovementType(inventory.getMovementType());
+        report.setProductCategory(inventory.getProductCategory());
+        reportRepository.save(report);
     }
 
     public boolean existsByProductName(String name){
