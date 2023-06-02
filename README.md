@@ -54,12 +54,13 @@
 + Document: Only register if movement type is 'Entry' or 'Exit'
 + Must have movement date and time
 + Reports of inventories deleted must be saved in a bin
++ Whenever a movement is registered or updated send a report on what was done
 
 ### Screens created for now:
 
 > Register Product
 
-![Screen Register Product](https://github.com/thalyshenrique7/inventory-control-system/assets/100730757/ef409cfe-52fa-4438-aef9-5bf1ae9f3067)
+![register](https://github.com/thalyshenrique7/inventory-control-system/assets/100730757/f4909b48-0853-4291-874b-05674eae69a8)
 
 > Update Product
 
@@ -79,7 +80,7 @@
 
 <tr align="center">
 <td>11</td>
-<td>2.7.10</td>
+<td>2.7.12</td>
 <td>8.0.32</td>
 <td>2.9.2</td>
 <td>5</td>
