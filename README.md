@@ -64,7 +64,7 @@
 
 > Update Product
 
-![Screen Update Product](https://github.com/thalyshenrique7/inventory-control-system/assets/100730757/f77e07b9-898d-4e02-b479-0d80057c621e)
+![image](https://github.com/thalyshenrique7/inventory-control-system/assets/100730757/82965405-2a22-4f75-9eac-5bdf142387d8)
 
 > Technologies Used:
 
