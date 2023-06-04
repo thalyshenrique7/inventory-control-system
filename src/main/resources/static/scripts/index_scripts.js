@@ -21,8 +21,6 @@ function showMessage(message) {
 }
 
 function register(){
-    const productCategory = productCategorySelect.value;
-
     fetch("http://localhost:8081/server/products/save",
         {
             headers: {
@@ -51,12 +49,10 @@ function register(){
             .then(function (data) {
             console.log(data);
             showMessage("Produto cadastrado com sucesso!");
-            // Realize as ações necessárias após o sucesso do salvamento
             })
             .catch(function (error) {
                 console.log(error);
                 showMessage("Erro ao salvar o produto.");
-                // Realize as ações necessárias em caso de erro
             });
 }
 

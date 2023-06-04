@@ -1,9 +1,16 @@
 const formulary = document.querySelector("form")
 const button = document.querySelector("button")
 const nameInput = document.querySelector(".name")
+const barCodeInput = document.querySelector(".barCode")
 const quantityMinInput = document.querySelector(".quantityMin")
+const balanceInput = document.querySelector(".balance")
 const priceInput = document.querySelector(".price")
 const productCategorySelect = document.querySelector(".productCategory");
+const movementTypeSelect = document.querySelector(".movementType");
+const reasonInput = document.querySelector(".reason");
+const documentInput = document.querySelector(".document");
+
+
 
 function showMessage(message) {
     var messageBox = document.createElement("div");
@@ -19,25 +26,29 @@ function showMessage(message) {
 }
 
 function register(){
-    const formulary = document.querySelector("form");
-    const id = formulary.getAttribute("data-id");
-
-    fetch(`http://localhost:8081/server/products/update/${id}`,
+    fetch("http://localhost:8081/server/inventory/save",
         {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
-            method: "PUT",
+            method: "POST",
             body: JSON.stringify({
-                name: nameInput.value,
-                quantityMin: quantityMinInput.value,
-                priceUnit: priceInput.value,
-                productCategory: productCategorySelect.value
+                reason: reasonInput.value,
+                document: documentInput.value,
+                product: {
+                    name: nameInput.value,
+                    barCode: barCodeInput.value,
+                    quantityMin: quantityMinInput.value,
+                    balance: balanceInput.value,
+                    price: priceInput.value
+                },
+                movementType: movementTypeSelect.value,
+                productCategory: productCategorySelect.value,
             })
 
         })  .then(function (response) {
-        if (response.ok) {
+        if (response.status === 201) {
             return response.json();
         } else {
             throw new Error("Erro ao salvar o produto.");
@@ -55,9 +66,14 @@ function register(){
 
 function clean(){
     nameInput.value = ""
+    barCodeInput.value = ""
     quantityMinInput.value = ""
+    balanceInput.value = ""
     priceInput.value = ""
     productCategorySelect.value = ""
+    movementTypeSelect.value = ""
+    reasonInput.value = ""
+    documentInput.value = ""
 }
 
 formulary.addEventListener("submit", function (event){

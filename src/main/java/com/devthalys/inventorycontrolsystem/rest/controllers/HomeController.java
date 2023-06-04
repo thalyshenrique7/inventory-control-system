@@ -15,4 +15,9 @@ public class HomeController {
     public String editProduct(){
         return "update_product";
     }
+
+    @RequestMapping(value = "/inventory_save")
+    public String movementSave(){
+        return "inventory_save";
+    }
 }

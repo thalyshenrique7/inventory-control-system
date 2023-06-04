@@ -84,6 +84,8 @@ public class ProductController {
 
         findProduct.setName(product.getName());
         findProduct.setQuantityMin(product.getQuantityMin());
+        findProduct.setPrice(product.getPriceUnit());
+        findProduct.getInventory().setProductCategory(product.getProductCategory());
 
         productService.update(findProduct);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Produto atualizado com sucesso.");
