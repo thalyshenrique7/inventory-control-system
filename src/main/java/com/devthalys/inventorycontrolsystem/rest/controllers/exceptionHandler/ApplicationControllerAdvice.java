@@ -75,4 +75,11 @@ public class ApplicationControllerAdvice {
         String errorMessage = e.getMessage();
         return new ApiErrors(errorMessage);
     }
+
+    @ExceptionHandler(BinException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ApiErrors handleBinException(BinException e){
+        String errorMessage = e.getMessage();
+        return new ApiErrors(errorMessage);
+    }
 }

@@ -10,5 +10,6 @@ public interface BinService {
 
     BinModel findById(Long id);
     List<BinModel> findAll();
+    void restoreBin(BinModel bin);
     void deleteById(Long id);
 }

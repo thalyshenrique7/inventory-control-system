@@ -8,8 +8,8 @@ import com.devthalys.inventorycontrolsystem.exceptions.SaveMovementException;
 import com.devthalys.inventorycontrolsystem.exceptions.ValueInvalidException;
 import com.devthalys.inventorycontrolsystem.models.*;
 import com.devthalys.inventorycontrolsystem.observers.Observable;
-import com.devthalys.inventorycontrolsystem.repositories.InventoryRepository;
 import com.devthalys.inventorycontrolsystem.repositories.BinRepository;
+import com.devthalys.inventorycontrolsystem.repositories.InventoryRepository;
 import com.devthalys.inventorycontrolsystem.repositories.InvoiceRepository;
 import com.devthalys.inventorycontrolsystem.repositories.ReportRepository;
 import com.devthalys.inventorycontrolsystem.services.InventoryService;
@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
@@ -90,21 +90,19 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     public List<FieldsListInventoryDto> listByProductInventory() {
-        List<InventoryModel> stockList = inventoryRepository.findByOrderByMovementDate();
-        List<FieldsListInventoryDto> stockDtoList = new ArrayList<>();
+        List<InventoryModel> inventoryList = inventoryRepository.findByOrderByMovementDate();
 
-        for (InventoryModel stock : stockList) {
-            FieldsListInventoryDto stockDto = new FieldsListInventoryDto();
-            stockDto.setMovementDate(stock.getMovementDate());
-            stockDto.setProduct(stock.getProduct());
-            stockDto.setMovementType(stock.getMovementType());
-            stockDto.setDocument(stock.getDocument());
-            stockDto.setReason(stock.getReason());
-            stockDto.setSituation(stock.getSituation());
-
-            stockDtoList.add(stockDto);
-        }
-        return stockDtoList;
+        return inventoryList.stream()
+                .map(inventory -> {
+                    FieldsListInventoryDto inventoryDto = new FieldsListInventoryDto();
+                    inventoryDto.setMovementDate(inventory.getMovementDate());
+                    inventoryDto.setProduct(inventory.getProduct());
+                    inventoryDto.setMovementType(inventory.getMovementType());
+                    inventoryDto.setDocument(inventory.getDocument());
+                    inventoryDto.setReason(inventory.getReason());
+                    inventoryDto.setSituation(inventory.getSituation());
+                    return inventoryDto;
+                }).collect(Collectors.toList());
     }
 
     public void save(InventoryModel inventory){
@@ -112,6 +110,7 @@ public class InventoryServiceImpl implements InventoryService {
         checkBalance(inventory);
         generateDocument(inventory);
 
+        inventory.setQuantity(inventory.getProduct().getBalance());
         inventory.setMovementDate(LocalDateTime.now());
 
         inventoryRepository.save(inventory);
@@ -226,6 +225,7 @@ public class InventoryServiceImpl implements InventoryService {
         bin.setDeletionDate(LocalDateTime.now());
         bin.setDeleted(true);
         bin.setMovementDate(inventory.getMovementDate());
+        bin.setMovementType(inventory.getMovementType());
         bin.setProductCategory(inventory.getProductCategory());
         binInventory.save(bin);
     }
