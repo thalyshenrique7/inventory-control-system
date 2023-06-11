@@ -2,7 +2,9 @@ package com.devthalys.inventorycontrolsystem.observers;
 
 import com.devthalys.inventorycontrolsystem.interfaces.Observer;
 import com.devthalys.inventorycontrolsystem.models.InventoryModel;
+import com.devthalys.inventorycontrolsystem.models.InvoiceModel;
 import com.devthalys.inventorycontrolsystem.models.ProductModel;
+import com.devthalys.inventorycontrolsystem.models.UserModel;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,6 +17,10 @@ public class ChangeObserver implements Observer {
         } else if (observer instanceof InventoryModel) {
             handleInventoryChange((InventoryModel) observer);
             calculateInventory(((InventoryModel) observer).getProduct().getInventory());
+        } else if(observer instanceof UserModel){
+            handleUserChange((UserModel) observer);
+        } else if(observer instanceof InvoiceModel){
+            handleInvoiceChange((InvoiceModel) observer);
         }
     }
 
@@ -42,6 +48,24 @@ public class ChangeObserver implements Observer {
                 + "\n");
     }
 
+    public void handleUserChange(UserModel user){
+        System.out.println("User Observer: "
+        + "\nLogin: " + user.getLogin()
+        + "\n" + verifyRole()
+        + "\n");
+    }
+
+    public void handleInvoiceChange(InvoiceModel invoice){
+        System.out.println("Invoice Observer - Invoice deleted: "
+        + "\nNumber Invoice: " + invoice.getNumberInvoice()
+        + "\nProduct ID: " + invoice.getProductId()
+        + "\nProduct Name: " + invoice.getProductName()
+        + "\nQuantity: " + invoice.getQuantity()
+        + "\nProduct Unit: " + invoice.getPriceUnit()
+        + "\nPrice Total: " + invoice.getPriceTotal()
+        + "\nSale Date: " + invoice.getSaleDate());
+    }
+
     public void calculateInventory(InventoryModel inventory) {
         int balance = inventory.getProduct().getBalance();
         int product = inventory.getProduct().getQuantityMin();
@@ -49,5 +73,10 @@ public class ChangeObserver implements Observer {
         if (balance < product) {
             System.out.println("Alerta: Quantidades em estoque estão abaixo da quantidade mínima!");
         }
+    }
+
+    public String verifyRole(){
+        UserModel user = new UserModel();
+        return user.isManager() ? "Role: Operator" : "Role: Manager";
     }
 }

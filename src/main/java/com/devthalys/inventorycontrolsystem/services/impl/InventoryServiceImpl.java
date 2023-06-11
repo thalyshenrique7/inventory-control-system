@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -105,6 +105,24 @@ public class InventoryServiceImpl implements InventoryService {
                 }).collect(Collectors.toList());
     }
 
+    public String verifyBestSeller(){
+        Map<String, Integer> quantitiesByProduct = inventoryRepository.findByMovementType(MovementType.SAIDA).stream()
+                .collect(Collectors.groupingBy(inventory -> inventory.getProduct().getName(),
+                        Collectors.summingInt(InventoryModel::getQuantity)));
+
+        Optional<Map.Entry<String, Integer>> mostSoldProductEntry = quantitiesByProduct.entrySet().stream()
+                .max(Comparator.comparingInt(Map.Entry::getValue));
+
+        if (mostSoldProductEntry.isPresent()) {
+            Map.Entry<String, Integer> entry = mostSoldProductEntry.get();
+            String mostSoldProduct = entry.getKey();
+            int quantitySold = entry.getValue();
+            return "O produto mais vendido é: " + mostSoldProduct + ", com quantidade vendida de: " + quantitySold + " unidades.";
+        } else {
+            return "Nenhum produto vendido encontrado.";
+        }
+    }
+
     public void save(InventoryModel inventory){
         checkMovementBeforeSave(inventory);
         checkBalance(inventory);
@@ -156,6 +174,9 @@ public class InventoryServiceImpl implements InventoryService {
         if(movementType == MovementType.ENTRADA) {
             int newBalance = currentBalance + inventory.getQuantity();
             inventory.getProduct().setBalance(newBalance);
+
+            generateInvoice(inventory);
+
         } else if(movementType == MovementType.SAIDA){
             int newBalance = currentBalance - inventory.getQuantity();
             inventory.getProduct().setBalance(newBalance);
@@ -188,6 +209,8 @@ public class InventoryServiceImpl implements InventoryService {
         }
     }
 
+
+
     public void generateDocument(InventoryModel inventory){
         if(!(inventory.getMovementType() == MovementType.ENTRADA
                 || inventory.getMovementType() == MovementType.SAIDA)){
@@ -202,6 +225,7 @@ public class InventoryServiceImpl implements InventoryService {
         invoice.setProductName(inventory.getProduct().getName());
         invoice.setQuantity(inventory.getQuantity());
         invoice.setPriceUnit(inventory.getProduct().getPrice());
+        invoice.setReason(inventory.getReason());
         invoice.setSaleDate(LocalDateTime.now());
 
         calculatePriceTotal(invoice, inventory);

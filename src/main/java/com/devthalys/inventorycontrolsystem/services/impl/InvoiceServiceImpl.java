@@ -3,6 +3,7 @@ package com.devthalys.inventorycontrolsystem.services.impl;
 import com.devthalys.inventorycontrolsystem.exceptions.InvoiceException;
 import com.devthalys.inventorycontrolsystem.models.InvoiceModel;
 import com.devthalys.inventorycontrolsystem.models.ProductModel;
+import com.devthalys.inventorycontrolsystem.observers.Observable;
 import com.devthalys.inventorycontrolsystem.repositories.InvoiceRepository;
 import com.devthalys.inventorycontrolsystem.repositories.ProductRepository;
 import com.devthalys.inventorycontrolsystem.services.InvoiceService;
@@ -19,6 +20,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private Observable observable;
 
     @Override
     public InvoiceModel findByNumberInvoice(Long numberInvoice) {
@@ -50,6 +54,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 throw new InvoiceException("Nota Fiscal não encontrada no sistema.");
             }
             invoiceRepository.deleteByNumberInvoice(numberInvoice);
+            observable.notifyStockChange(invoice);
         }
     }
 }

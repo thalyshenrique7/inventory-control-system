@@ -35,5 +35,8 @@ public class InvoiceModel {
     private float priceTotal;
 
     @Column
+    private String reason;
+
+    @Column
     private LocalDateTime saleDate;
 }

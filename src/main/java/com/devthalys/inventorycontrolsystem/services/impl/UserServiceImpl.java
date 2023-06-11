@@ -2,6 +2,7 @@ package com.devthalys.inventorycontrolsystem.services.impl;
 
 import com.devthalys.inventorycontrolsystem.exceptions.UserException;
 import com.devthalys.inventorycontrolsystem.models.UserModel;
+import com.devthalys.inventorycontrolsystem.observers.Observable;
 import com.devthalys.inventorycontrolsystem.repositories.UserRepository;
 import com.devthalys.inventorycontrolsystem.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private Observable observable;
 
     public List<UserModel> findAll(){
         return userRepository.findAll();
@@ -42,6 +46,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     public UserModel save(UserModel user){
+        observable.notifyStockChange(user);
         return userRepository.save(user);
     }
 

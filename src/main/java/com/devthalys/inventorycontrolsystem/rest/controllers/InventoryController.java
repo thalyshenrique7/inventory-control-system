@@ -111,6 +111,15 @@ public class InventoryController {
         return ResponseEntity.status(HttpStatus.OK).body(inventoryService.findProductByBalanceGreaterThanQuantityMin());
     }
 
+    @GetMapping(value = "/best_seller")
+    public ResponseEntity<String> findByBestSeller(){
+        String bestSeller = inventoryService.verifyBestSeller();
+        if(bestSeller.isEmpty()){
+            throw new ProductNotFoundException("Produto não cadastrado no sistema.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(bestSeller);
+    }
+
     @Transactional
     @PostMapping("/save")
     @ApiOperation(value = "Save Movement")
