@@ -42,6 +42,7 @@
 + List inventory with fields: Movement Date, Product, Movement Type, Document, Reason, Balance and Situation
 + Product Balance < Quantity Minimum
 + Product Balance > Quantity Minimum
++ Product Best Seller
 
 ### Movement Registration:
 + Movements types 'Entry' and 'Exit' are allowed just if product exist in inventory
