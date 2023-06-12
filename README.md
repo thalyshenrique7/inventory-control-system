@@ -43,6 +43,8 @@
 + Product Balance < Quantity Minimum
 + Product Balance > Quantity Minimum
 + Product Best Seller
++ Highest Price Product
++ Lower Price Product
 
 ### Movement Registration:
 + Movements types 'Entry' and 'Exit' are allowed just if product exist in inventory
