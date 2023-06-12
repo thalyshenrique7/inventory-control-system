@@ -13,11 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.devthalys.inventorycontrolsystem.enums.MovementType.SALDO_INICIAL;
 import static com.devthalys.inventorycontrolsystem.enums.ProductCategory.CELULARES;
@@ -113,10 +115,10 @@ class InventoryServiceImplTest {
         when(inventoryRepository.existsByProductName(anyString())).thenReturn(true);
         when(inventoryRepository.findByProductName(anyString())).thenReturn(List.of(inventory));
 
-        List<InventoryModel> response = inventoryService.findByProductName(inventory.getProduct().getName());
+        Page<InventoryModel> response = inventoryService.findByProductName(inventory.getProduct().getName());
 
         assertNotNull(response);
-        assertEquals(inventory.getProduct().getName(), response.get(0).getProduct().getName());
+        assertEquals(inventory.getProduct().getName(), response.get().collect(Collectors.toList()));
     }
 
     @Test

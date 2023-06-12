@@ -8,10 +8,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.Cacheable;
 
 @RestController
 @CrossOrigin(value = "*")
@@ -21,6 +24,12 @@ public class InvoiceController {
 
     @Autowired
     private InvoiceServiceImpl invoiceService;
+
+    @GetMapping(value = "/")
+    @Cacheable(value = "Invoice List")
+    public ResponseEntity<Page<InvoiceModel>> findAll(Pageable pageable){
+        return ResponseEntity.status(HttpStatus.OK).body(invoiceService.findAll(pageable));
+    }
 
     @GetMapping(value = "/{numberInvoice}")
     @ApiOperation(value = "Find Invoice By Number")

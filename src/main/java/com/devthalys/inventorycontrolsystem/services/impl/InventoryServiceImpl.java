@@ -14,11 +14,14 @@ import com.devthalys.inventorycontrolsystem.repositories.InvoiceRepository;
 import com.devthalys.inventorycontrolsystem.repositories.ReportRepository;
 import com.devthalys.inventorycontrolsystem.services.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.repository.util.ReactiveWrapperConverters.map;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
@@ -103,6 +106,24 @@ public class InventoryServiceImpl implements InventoryService {
                     inventoryDto.setSituation(inventory.getSituation());
                     return inventoryDto;
                 }).collect(Collectors.toList());
+    }
+
+    public InventoryModel findByHighestPriceProduct(){
+        Optional<InventoryModel> highestPriceProduct = inventoryRepository.findByOrderByProduct()
+                .stream()
+                .max(Comparator.comparingDouble(product -> product.getProduct().getPrice()));
+
+       return highestPriceProduct
+               .orElseThrow(() -> new ProductNotFoundException("Produto não cadastrado no sistema"));
+    }
+
+    public InventoryModel findByLowerPriceProduct(){
+        Optional<InventoryModel> lowerPriceProduct = inventoryRepository.findByOrderByProduct()
+                .stream()
+                .min(Comparator.comparingDouble(product -> product.getProduct().getPrice()));
+
+        return lowerPriceProduct
+                .orElseThrow(() -> new ProductNotFoundException("Produto não cadastrado no sistema."));
     }
 
     public String verifyBestSeller(){

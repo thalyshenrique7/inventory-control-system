@@ -8,6 +8,8 @@ import com.devthalys.inventorycontrolsystem.repositories.InvoiceRepository;
 import com.devthalys.inventorycontrolsystem.repositories.ProductRepository;
 import com.devthalys.inventorycontrolsystem.services.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,6 +25,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
     private Observable observable;
+
+    @Override
+    public Page<InvoiceModel> findAll(Pageable pageable) {
+        return invoiceRepository.findAll(pageable);
+    }
 
     @Override
     public InvoiceModel findByNumberInvoice(Long numberInvoice) {

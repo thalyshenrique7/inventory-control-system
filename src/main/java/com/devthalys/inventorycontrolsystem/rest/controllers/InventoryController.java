@@ -6,15 +6,17 @@ import com.devthalys.inventorycontrolsystem.enums.MovementType;
 import com.devthalys.inventorycontrolsystem.exceptions.InventoryException;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductAlreadyExistsException;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductNotFoundException;
-import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import com.devthalys.inventorycontrolsystem.models.InventoryModel;
-import com.devthalys.inventorycontrolsystem.services.impl.ProductServiceImpl;
+import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import com.devthalys.inventorycontrolsystem.services.impl.InventoryServiceImpl;
+import com.devthalys.inventorycontrolsystem.services.impl.ProductServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +32,6 @@ import java.util.List;
 @RequestMapping(value = "/inventory")
 @Api(value = "Inventory Control System")
 public class InventoryController {
-
     @Autowired
     private InventoryServiceImpl inventoryService;
 
@@ -118,6 +119,24 @@ public class InventoryController {
             throw new ProductNotFoundException("Produto não cadastrado no sistema.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(bestSeller);
+    }
+
+    @GetMapping(value = "/highest_price")
+    public ResponseEntity<InventoryModel> findByHighestPriceProduct(){
+        InventoryModel highestPriceProduct = inventoryService.findByHighestPriceProduct();
+        if(highestPriceProduct == null){
+            throw new ProductNotFoundException("Não existem produtos cadastrados no sistema.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(highestPriceProduct);
+    }
+
+    @GetMapping(value = "/lower_price")
+    public ResponseEntity<InventoryModel> findByLowerPriceProduct(){
+        InventoryModel lowerPriceProduct = inventoryService.findByLowerPriceProduct();
+        if(lowerPriceProduct == null){
+            throw new ProductNotFoundException("Não existem produtos cadastrados no sistema.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(lowerPriceProduct);
     }
 
     @Transactional
