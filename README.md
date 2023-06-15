@@ -45,6 +45,7 @@
 + Product Best Seller
 + Highest Price Product
 + Lower Price Product
++ Average cost of products
 
 ### Movement Registration:
 + Movements types 'Entry' and 'Exit' are allowed just if product exist in inventory
