@@ -15,8 +15,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -113,6 +111,8 @@ public class InventoryController {
     }
 
     @GetMapping(value = "/best_seller")
+    @ApiOperation(value = "Verify the product best seller")
+    @ApiResponse(code = 200, message = "OK")
     public ResponseEntity<String> findByBestSeller(){
         String bestSeller = inventoryService.verifyBestSeller();
         if(bestSeller.isEmpty()){
@@ -122,6 +122,8 @@ public class InventoryController {
     }
 
     @GetMapping(value = "/highest_price")
+    @ApiOperation(value = "Find by product with highest price")
+    @ApiResponse(code = 200, message = "OK")
     public ResponseEntity<InventoryModel> findByHighestPriceProduct(){
         InventoryModel highestPriceProduct = inventoryService.findByHighestPriceProduct();
         if(highestPriceProduct == null){
@@ -131,12 +133,25 @@ public class InventoryController {
     }
 
     @GetMapping(value = "/lower_price")
+    @ApiOperation(value = "Find by product with lower price")
+    @ApiResponse(code = 200, message = "OK")
     public ResponseEntity<InventoryModel> findByLowerPriceProduct(){
         InventoryModel lowerPriceProduct = inventoryService.findByLowerPriceProduct();
         if(lowerPriceProduct == null){
             throw new ProductNotFoundException("Não existem produtos cadastrados no sistema.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(lowerPriceProduct);
+    }
+
+    @GetMapping(value = "/average")
+    @ApiOperation(value = "Verify the average price of products")
+    @ApiResponse(code = 200, message = "OK")
+    public ResponseEntity<String> calculateAveragePrice(InventoryModel inventory){
+        List<InventoryModel> productList = inventoryService.findByOrderByProduct();
+        if(productList.isEmpty()){
+            throw new InventoryException("Não existem produtos cadastrados no sistema.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(inventoryService.calculateAveragePrice(inventory));
     }
 
     @Transactional

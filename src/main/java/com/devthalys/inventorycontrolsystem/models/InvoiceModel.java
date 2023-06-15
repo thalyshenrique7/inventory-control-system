@@ -16,7 +16,6 @@ public class InvoiceModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(length = 5)
     private Long numberInvoice;
 
     @Column

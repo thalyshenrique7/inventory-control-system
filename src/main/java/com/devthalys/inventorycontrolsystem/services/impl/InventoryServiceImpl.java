@@ -14,14 +14,14 @@ import com.devthalys.inventorycontrolsystem.repositories.InvoiceRepository;
 import com.devthalys.inventorycontrolsystem.repositories.ReportRepository;
 import com.devthalys.inventorycontrolsystem.services.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.repository.util.ReactiveWrapperConverters.map;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
@@ -256,6 +256,17 @@ public class InventoryServiceImpl implements InventoryService {
     public void calculatePriceTotal(InvoiceModel invoice, InventoryModel inventory){
         float calculate = inventory.getQuantity() * inventory.getProduct().getPrice();
         invoice.setPriceTotal(calculate);
+    }
+
+    public String calculateAveragePrice(InventoryModel inventory){
+        List<InventoryModel> productList = inventoryRepository.findByOrderByProduct();
+
+        double averagePrice = productList.stream()
+                .mapToDouble(product -> product.getProduct().getPrice())
+                .average()
+                .orElse(0.0);
+
+        return String.format("A média de preço dos produtos é de: %.2f", averagePrice);
     }
 
     public void saveBin(InventoryModel inventory){
