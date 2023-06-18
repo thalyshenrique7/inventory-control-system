@@ -230,8 +230,6 @@ public class InventoryServiceImpl implements InventoryService {
         }
     }
 
-
-
     public void generateDocument(InventoryModel inventory){
         if(!(inventory.getMovementType() == MovementType.ENTRADA
                 || inventory.getMovementType() == MovementType.SAIDA)){

@@ -12,6 +12,7 @@ public interface ProductRepository extends JpaRepository<ProductModel, Long> {
 
     Optional<ProductModel> findById(Long id);
     List<ProductModel> findByNameIgnoreCase(String name);
+    ProductModel findByName(String productName);
     ProductModel findByBarCode(Long barCode);
     boolean existsByBarCode(Long barCode);
     void deleteById(Long id);

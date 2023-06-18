@@ -40,6 +40,11 @@ public class ProductServiceImpl implements ProductService {
         return products;
     }
 
+    @Override
+    public ProductModel findByName(String productName) {
+        return productRepository.findByName(productName);
+    }
+
     public ProductModel findByBarCode(Long barCode){
         if(!productRepository.existsByBarCode(barCode)){
             throw new ProductNotFoundException("Produto não cadastrado no sistema.");

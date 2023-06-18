@@ -82,4 +82,18 @@ public class ApplicationControllerAdvice {
         String errorMessage = e.getMessage();
         return new ApiErrors(errorMessage);
     }
+
+    @ExceptionHandler(ClientException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ApiErrors handleClientException(ClientException e){
+        String errorMessage = e.getMessage();
+        return new ApiErrors(errorMessage);
+    }
+
+    @ExceptionHandler(ShoppingCartException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ApiErrors handleShoppingCartException(ShoppingCartException e){
+        String errorMessage = e.getMessage();
+        return new ApiErrors(errorMessage);
+    }
 }

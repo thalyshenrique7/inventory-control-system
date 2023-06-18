@@ -40,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/inventory/delete/**").hasAnyRole("CEO", "MANAGER")
                 .antMatchers("/bin/delete/**").hasAnyRole("CEO", "MANAGER")
                 .antMatchers("/invoice/cancel/**").hasAnyRole("CEO", "MANAGER")
+                .antMatchers("/clients/save").permitAll()
                 .anyRequest().authenticated()
                     .and()
                 .httpBasic();
