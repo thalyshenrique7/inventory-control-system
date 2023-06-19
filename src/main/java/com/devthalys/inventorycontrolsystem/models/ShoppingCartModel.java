@@ -1,5 +1,8 @@
 package com.devthalys.inventorycontrolsystem.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,9 +30,11 @@ public class ShoppingCartModel implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
+    @JsonManagedReference
     private ClientModel client;
 
     @OneToOne
     @JoinColumn(name = "product_id")
+    @JsonManagedReference
     private ProductModel product;
 }

@@ -1,5 +1,6 @@
 package com.devthalys.inventorycontrolsystem.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,5 +35,6 @@ public class ClientModel implements Serializable {
     private float wallet;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<ShoppingCartModel> shoppingList;
 }

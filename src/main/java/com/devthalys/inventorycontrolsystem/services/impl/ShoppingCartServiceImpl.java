@@ -1,5 +1,6 @@
 package com.devthalys.inventorycontrolsystem.services.impl;
 
+import com.devthalys.inventorycontrolsystem.dtos.ShoppingCartDto;
 import com.devthalys.inventorycontrolsystem.enums.MovementType;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductNotFoundException;
 import com.devthalys.inventorycontrolsystem.exceptions.ShoppingCartException;
@@ -7,6 +8,7 @@ import com.devthalys.inventorycontrolsystem.models.ClientModel;
 import com.devthalys.inventorycontrolsystem.models.InventoryModel;
 import com.devthalys.inventorycontrolsystem.models.ProductModel;
 import com.devthalys.inventorycontrolsystem.models.ShoppingCartModel;
+import com.devthalys.inventorycontrolsystem.repositories.ClientRepository;
 import com.devthalys.inventorycontrolsystem.repositories.InventoryRepository;
 import com.devthalys.inventorycontrolsystem.repositories.ProductRepository;
 import com.devthalys.inventorycontrolsystem.repositories.ShoppingCartRepository;
@@ -29,27 +31,32 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Autowired
     private InventoryRepository inventoryRepository;
 
+    @Autowired
+    private ClientRepository clientRepository;
+
     @Override
     public ShoppingCartModel findByOrderNumber(Long orderNumber) {
         return shoppingCartRepository.findById(orderNumber)
-                .map(order -> {
-                    order.getOrderNumber();
-                    return order;
-                }).orElseThrow(() -> new ShoppingCartException("Order number not found."));
+                .orElseThrow(() -> new ShoppingCartException("Order number not found."));
     }
 
     @Override
-    public void addProduct(ClientModel client, Long barCode, Integer quantity) {
-        ProductModel product = productRepository.findByBarCode(barCode);
+    public void addProduct(ShoppingCartDto shoppingCartDto) {
+        String client = shoppingCartDto.getClientCpf();
+        ClientModel findClient = clientRepository.findByCpf(client);
 
-        if(product == null){
+        String productName = shoppingCartDto.getProduct();
+        ProductModel findProduct = productRepository.findByName(productName);
+
+        if(findProduct == null){
             throw new ProductNotFoundException("Product not found.");
         }
 
         var shoppingCart = new ShoppingCartModel();
-        shoppingCart.setClient(client);
-        shoppingCart.setProduct(product);
-        shoppingCart.setQuantity(quantity);
+        shoppingCart.setClient(findClient);
+        shoppingCart.setProduct(findProduct);
+        shoppingCart.setQuantity(shoppingCartDto.getQuantity());
+        calculateTotalCost(shoppingCart);
 
         shoppingCartRepository.save(shoppingCart);
     }
@@ -89,5 +96,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 shopping.setQuantity(0);
             }
         }
+    }
+
+    public void calculateTotalCost(ShoppingCartModel shoppingCart){
+        float cost = shoppingCart.getProduct().getPrice() * shoppingCart.getQuantity();
+        shoppingCart.setTotalCost(cost);
     }
 }

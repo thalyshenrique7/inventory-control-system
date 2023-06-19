@@ -9,6 +9,7 @@ import java.util.List;
 public interface ClientService {
     List<ClientModel> findAll();
     ClientModel findByCpf(String cpf);
+    ClientModel findClientFetchShopping(Long id);
     void save(ClientModel client);
     boolean existsByCpf(String cpf);
 }

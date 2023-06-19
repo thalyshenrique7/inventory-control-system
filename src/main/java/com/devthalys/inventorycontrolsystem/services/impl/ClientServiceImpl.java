@@ -29,6 +29,11 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public ClientModel findClientFetchShopping(Long id) {
+        return clientRepository.findClientFetchShopping(id);
+    }
+
+    @Override
     public void save(ClientModel client) {
         clientRepository.save(client);
     }

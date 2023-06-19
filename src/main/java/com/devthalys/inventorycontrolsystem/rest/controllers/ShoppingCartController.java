@@ -1,19 +1,22 @@
 package com.devthalys.inventorycontrolsystem.rest.controllers;
 
+import com.devthalys.inventorycontrolsystem.dtos.ShoppingCartDto;
 import com.devthalys.inventorycontrolsystem.exceptions.ClientException;
 import com.devthalys.inventorycontrolsystem.models.ClientModel;
-import com.devthalys.inventorycontrolsystem.models.ProductModel;
+import com.devthalys.inventorycontrolsystem.models.ShoppingCartModel;
 import com.devthalys.inventorycontrolsystem.services.impl.ClientServiceImpl;
 import com.devthalys.inventorycontrolsystem.services.impl.ShoppingCartServiceImpl;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/shopping")
+@Api(value = "Inventory Control System")
 public class ShoppingCartController {
 
     @Autowired
@@ -22,10 +25,19 @@ public class ShoppingCartController {
     @Autowired
     private ClientServiceImpl clientService;
 
+    @GetMapping(value = "/{orderNumber}")
+    @ApiOperation(value = "Find by order number")
+    @ApiResponse(code = 200, message = "OK")
+    public ResponseEntity<ShoppingCartModel> findByOrderNumber(@PathVariable Long orderNumber){
+        return ResponseEntity.status(HttpStatus.OK).body(shoppingCartService.findByOrderNumber(orderNumber));
+    }
+
     @PostMapping(value = "/add")
-    public ResponseEntity<Object> addProduct(ClientModel client, Long barCode, Integer quantity){
-        shoppingCartService.addProduct(client, barCode, quantity);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Product added success.");
+    @ApiOperation(value = "Add product into client")
+    @ApiResponse(code = 200, message = "201")
+    public ResponseEntity<Object> addProduct(@RequestBody ShoppingCartDto shoppingCartDto){
+        shoppingCartService.addProduct(shoppingCartDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Product added success.");
     }
 
     @PostMapping(value = "/buy")
