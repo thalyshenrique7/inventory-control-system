@@ -8,11 +8,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(value = "/clients")
@@ -31,7 +33,9 @@ public class ClientController {
         if(clientList.isEmpty()){
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ClientException("Clients do not registered in system."));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(clientService.findAll());
+        return ResponseEntity.status(HttpStatus.OK)
+                .cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
+                .body(clientService.findAll());
     }
 
     @GetMapping(value = "/{cpf}")
@@ -42,14 +46,18 @@ public class ClientController {
         if(client == null){
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ClientException("Client do not registered in system."));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(client);
+        return ResponseEntity.status(HttpStatus.OK)
+                .cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
+                .body(client);
     }
 
     @GetMapping(value = "/shopping/{id}")
     @ApiResponses( {@ApiResponse(code = 404, message = "Clients do not registered in system."),
                     @ApiResponse(code = 200, message = "OK")})
     public ResponseEntity<ClientModel> findClientFetchShopping(@PathVariable Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(clientService.findClientFetchShopping(id));
+        return ResponseEntity.status(HttpStatus.OK)
+                .cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
+                .body(clientService.findClientFetchShopping(id));
     }
 
     @PostMapping(value = "/save")
