@@ -9,6 +9,7 @@
 + Swagger for documentation of endpoints
 + Observer pattern send notifications of saved or updated products and movements and whenever the current balance of a product is below the minimum quantity
 + Scheduled to delete reports of inventories deleted after 30 days
++ Cache Control to reducing use data in specifics filters
 
 ### Functional Requirements:
 + Only user 'Ceo' can register new users with 2 profiles disponible 'Manager' and 'Operator' and delete users
@@ -46,6 +47,8 @@
 + Highest Price Product
 + Lower Price Product
 + Average cost of products
++ List of MovementType
++ List of ProductCategory
 
 ### Movement Registration:
 + Movements types 'Entry' and 'Exit' are allowed just if product exist in inventory
