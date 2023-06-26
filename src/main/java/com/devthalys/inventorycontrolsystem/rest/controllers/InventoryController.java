@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @CrossOrigin(value = "*")
@@ -152,6 +154,20 @@ public class InventoryController {
             throw new InventoryException("Não existem produtos cadastrados no sistema.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(inventoryService.calculateAveragePrice(inventory));
+    }
+
+    @GetMapping(value = "/movement")
+    public ResponseEntity<?> listMovementType(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .cacheControl(CacheControl.maxAge(60, TimeUnit.MINUTES))
+                .body(inventoryService.listMovementType());
+    }
+
+    @GetMapping(value = "/categories")
+    public ResponseEntity<?> listProductCategory(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .cacheControl(CacheControl.maxAge(60, TimeUnit.MINUTES))
+                .body(inventoryService.listProductCategory());
     }
 
     @Transactional

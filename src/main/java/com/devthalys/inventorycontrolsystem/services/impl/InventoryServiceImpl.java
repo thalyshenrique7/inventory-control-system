@@ -2,6 +2,7 @@ package com.devthalys.inventorycontrolsystem.services.impl;
 
 import com.devthalys.inventorycontrolsystem.dtos.FieldsListInventoryDto;
 import com.devthalys.inventorycontrolsystem.enums.MovementType;
+import com.devthalys.inventorycontrolsystem.enums.ProductCategory;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductAlreadyExistsException;
 import com.devthalys.inventorycontrolsystem.exceptions.ProductNotFoundException;
 import com.devthalys.inventorycontrolsystem.exceptions.SaveMovementException;
@@ -142,6 +143,14 @@ public class InventoryServiceImpl implements InventoryService {
         } else {
             return "Nenhum produto vendido encontrado.";
         }
+    }
+
+    public MovementType[] listMovementType(){
+        return MovementType.values();
+    }
+
+    public ProductCategory[] listProductCategory(){
+        return ProductCategory.values();
     }
 
     public void save(InventoryModel inventory){
